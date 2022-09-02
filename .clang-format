@@ -1,0 +1,140 @@
+---
+# Core
+Language: Cpp
+Standard: Cpp11
+ColumnLimit: '0' # No limit
+
+### Bin pack ###
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+
+# Includes
+SortIncludes: 'true'
+IncludeBlocks: Regroup
+IncludeCategories:
+    # Current project
+    - Regex: '"'
+      Priority: 001
+    
+    # Custom project categories...
+
+    # Third party dependecies
+    - Regex: '<'
+      Priority: 500
+    
+    # Custom dependencies categories...
+
+    # C++ includes
+    - Regex: '[^.h .hpp]>'
+      Priority: 998
+
+    # C includes
+    - Regex: '<[^/\n]+[.]h>'
+      Priority: 999
+
+# Braces
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterCaseLabel: true
+    AfterClass: true
+    AfterControlStatement: true
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: false
+    AfterObjCDeclaration: true
+    AfterStruct: true
+    AfterUnion: true
+    AfterExternBlock: true
+    BeforeCatch: true
+    BeforeElse: true
+    IndentBraces: false
+    SplitEmptyFunction: true
+    SplitEmptyRecord: true
+    SplitEmptyNamespace: true
+
+# Indentation
+UseTab: ForIndentation
+TabWidth: '4'
+IndentWidth: '4'
+ContinuationIndentWidth: '4'
+ConstructorInitializerIndentWidth: '4'
+IndentCaseLabels: 'false'
+IndentWrappedFunctionNames: 'true'
+IndentPPDirectives: BeforeHash
+NamespaceIndentation: None
+AccessModifierOffset: '-4'
+
+# Space
+SpaceAfterCStyleCast: 'false'
+SpaceAfterLogicalNot: 'false'
+SpaceAfterTemplateKeyword: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeCpp11BracedList: 'true'
+SpaceBeforeCtorInitializerColon: 'false'
+SpaceBeforeInheritanceColon: 'false'
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: 'true'
+SpaceInEmptyParentheses: 'false'
+SpacesBeforeTrailingComments: '1'
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInContainerLiterals: 'false'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+
+### Alignment ###
+PointerAlignment: Left
+DerivePointerAlignment: 'false'
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+AlignConsecutiveDeclarations: 'false'
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveMacros: 'true'
+AlignOperands: 'true'
+AlignTrailingComments: 'true'
+
+### Single Line ###
+AllowShortCaseLabelsOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLambdasOnASingleLine: Inline
+AllowAllArgumentsOnNextLine: 'false'
+AllowShortLoopsOnASingleLine: 'false'
+AllowShortBlocksOnASingleLine: 'false'
+AllowAllParametersOfDeclarationOnNextLine: 'false'
+AllowShortIfStatementsOnASingleLine: Never
+
+### Break ###
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: 'false'
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: 'false'
+BreakInheritanceList: BeforeComma
+BreakStringLiterals: 'false'
+
+# Penalties
+PenaltyBreakAssignment: '0'
+PenaltyBreakBeforeFirstCallParameter: '0'
+PenaltyBreakComment: '0'
+PenaltyBreakFirstLessLess: '0'
+PenaltyBreakString: '0'
+PenaltyBreakTemplateDeclaration: '0'
+PenaltyExcessCharacter: '0'
+PenaltyReturnTypeOnItsOwnLine: '999999999' # Nope
+
+# Constructor Initializers
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+AllowAllConstructorInitializersOnNextLine: 'true'
+BreakConstructorInitializers: BeforeComma
+
+# Comments
+ReflowComments: 'false'
+CommentPragmas: '^ TODO@:'
+FixNamespaceComments: 'true'
+
+# Misc
+Cpp11BracedListStyle: 'false'
+SortUsingDeclarations: 'true'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+MaxEmptyLinesToKeep: '2'
+
