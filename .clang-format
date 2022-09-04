@@ -61,7 +61,7 @@ ConstructorInitializerIndentWidth: '4'
 IndentCaseLabels: 'false'
 IndentWrappedFunctionNames: 'true'
 IndentPPDirectives: BeforeHash
-NamespaceIndentation: None
+NamespaceIndentation: Inner
 AccessModifierOffset: '-4'
 
 # Space
@@ -138,3 +138,4 @@ SortUsingDeclarations: 'true'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
 MaxEmptyLinesToKeep: '2'
 
+CompactNamespaces: 'true'
