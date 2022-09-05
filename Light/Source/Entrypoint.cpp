@@ -1,3 +1,4 @@
+#include "Exception.hpp"
 #include "Logger.hpp"
 #include "Mojula.hpp"
 
@@ -72,19 +73,18 @@ int main()
 			}
 		}
 	}
-	catch (std::exception& exception)
+	catch (Exception::Exception exception)
 	{
 		////////////////////////////////////////////////////////////////
 		/// Save user progress if applicable
 		{
 			//     ???
 		}
-		std::cout << "Excepton thrown m8! --> " << exception.what() << '\n';
 
 		////////////////////////////////////////////////////////////////
 		/// Show/save information about what went wrong, where and when
 		{
-			//     ???
+            std::cout << exception.what();
 		}
 
 		// return exception.code
