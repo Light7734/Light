@@ -5,6 +5,10 @@
 An idiot admires complexity, a genius admires simplicity.
 </div>
 
+ [![forthebadge](https://forthebadge.com/images/badges/works-on-my-machine.svg)](https://forthebadge.com)
+ [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+ [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 ## What's all this?
 Light Engine is a data-driven and highly-modularized game engine written in modern C++
   
