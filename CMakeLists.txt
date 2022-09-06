@@ -25,6 +25,7 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Exception
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
+    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 
 target_include_directories(
@@ -41,6 +42,7 @@ target_include_directories(
     Logger
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger/Source
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
+    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 
 target_link_libraries(
@@ -48,9 +50,11 @@ target_link_libraries(
     PRIVATE Exception
     PRIVATE Logger
     PRIVATE Mojula
+    PRIVATE spdlog
 )
 
 target_link_libraries(
     Logger
     PRIVATE Mojula
+    PRIVATE spdlog
 )

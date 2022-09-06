@@ -5,12 +5,12 @@
 #include <unordered_map>
 #include <vector>
 
-#define CREATE_MODULE(ModuleName)                                  \
-	{                                                              \
-		using namespace Light;                                     \
-		Mojula::Module* module = new ModuleName::ModuleName();     \
-		modules.push_back(module);                                 \
-		modulesData[module->GetUUID()] = module->GetDataPointer(); \
+#define CREATE_MODULE(ModuleName)                                          \
+	{                                                                      \
+		using namespace Light;                                             \
+		ModuleName::Module* module = new ModuleName::Module();             \
+		modules.push_back(module);                                         \
+		modulesAPI[module->GetUUID()] = new ModuleName::ModuleAPI(module); \
 	}
 
 int main()
@@ -21,7 +21,7 @@ int main()
 	{
 		std::vector<Mojula::Module*> modules;
 		std::vector<Mojula::Module*> tickableModules;
-		std::unordered_map<uint64_t, Mojula::ModuleData*> modulesData;
+		std::unordered_map<uint64_t, Mojula::ModuleAPI*> modulesAPI;
 
 		////////////////////////////////////////////////////////////////
 		/// Create the modules and set up pointers to dependencies
@@ -38,7 +38,7 @@ int main()
 
 			for (uint64_t dependencyUUID : module->GetDependenciesUUID())
 			{
-				module->StoreDependencyDataPointer(dependencyUUID, modulesData[dependencyUUID]);
+				module->StoreAPI(dependencyUUID, modulesAPI[dependencyUUID]);
 			}
 		}
 
@@ -47,14 +47,14 @@ int main()
 		{
 			for (auto* module : modules)
 			{
-				module->OnBirth();
+				module->OnInit();
 			}
 
 			while (true)
 			{
 				for (auto* module : tickableModules)
 				{
-					module->Tick();
+					module->OnUpdate();
 				}
 			}
 		}
@@ -64,7 +64,7 @@ int main()
 		{
 			for (auto* module : modules) // do it in reverse order...
 			{
-				module->OnDeath();
+				module->OnDeinit();
 			}
 
 			for (auto* module : modules) // do it in reverse order...
@@ -77,15 +77,9 @@ int main()
 	{
 		////////////////////////////////////////////////////////////////
 		/// Save user progress if applicable
-		{
-			//     ???
-		}
 
 		////////////////////////////////////////////////////////////////
 		/// Show/save information about what went wrong, where and when
-		{
-            std::cout << exception.what();
-		}
 
 		// return exception.code
 	}

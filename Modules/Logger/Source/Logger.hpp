@@ -2,52 +2,60 @@
 
 #include "Mojula.hpp"
 
-#include <iostream>
-#include <stdexcept>
+#include <memory>
+#include <spdlog/spdlog.h>
+#include <string>
 
 namespace Light { namespace Logger {
 
-	struct LoggerData: public Mojula::ModuleData
+	struct ModuleConfig
 	{
+		spdlog::level::level_enum logLevel;
 	};
 
-	class Logger: public Mojula::Module
+	class Module : public Mojula::Module
 	{
 	public:
-		Logger()
-		    : Module("Logger", 69ull, {}, nullptr /* test if we can pass data right here */, false)
-		{
-			if (s_Instance)
-			{
-				throw std::runtime_error("Something's wrong, I can feel it!");
-			}
-
-			s_Instance = this;
-
-			m_ExposedData = &m_LoggerData;
-		}
-
-		virtual ~Logger()
+		Module()
+		    : Mojula::Module("Logger", 69ull, {}, false)
 		{
 		}
 
-		virtual void OnBirth() final override
-		{
-			std::cout << "Logger on birth\n";
-		}
+		virtual ~Module() {}
 
-		virtual void OnDeath() final override
-		{
-			std::cout << "Logger on death\n";
-		}
+		////////////////////////////////////////////////////////////////////////////////
+		// Mojula::Module Interface
 
-		virtual void Tick() final override {}
+		virtual void OnConfig() final override {}
+		virtual void OnInit() final override {}
+		virtual void OnUpdate() final override {}
+		virtual void OnDeinit() final override {}
 
-		virtual void StoreDependencyDataPointer(uint64_t module_uuid, Mojula::ModuleData* dependency_data) final override {}
+		virtual void StoreAPI(uint64_t moduleUUID, Mojula::ModuleAPI* dependency_api) final override {}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// API Functions ; to be used by other modules
+		void CreateCategory(const char* category, const char* pattern = "%^[%H:%M:%S]%g@%! ==> %v%$");
+
+		std::shared_ptr<spdlog::logger> GetLogger(const char* category) { return m_Loggers[category]; }
 
 	private:
-		static Logger* s_Instance;
-		LoggerData m_LoggerData = {};
+		std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> m_Loggers;
+	};
+
+	class ModuleAPI : public Mojula::ModuleAPI
+	{
+	public:
+		ModuleAPI(Module* module)
+		    : m_Module(module) { s_Module = m_Module; }
+
+		inline void CreateCategory(const char* category, const char* pattern = "%^[%H:%M:%S]%g@%! ==> %v%$") { m_Module->CreateCategory(category, pattern); }
+
+		static inline std::shared_ptr<spdlog::logger> GetLogger(const char* category) { return s_Module->GetLogger(category); }
+
+	private:
+		static Module* s_Module; // !< static flavor of the module to make logging macros possible
+		Module* m_Module;        // !< the module
 	};
 
 }} // namespace Light::Logger
