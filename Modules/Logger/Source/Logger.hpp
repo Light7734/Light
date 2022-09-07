@@ -35,9 +35,12 @@ namespace Light { namespace Logger {
 
 		////////////////////////////////////////////////////////////////////////////////
 		// API Functions ; to be used by other modules
-		void CreateCategory(const char* category, const char* pattern = "%^[%H:%M:%S]%g@%! ==> %v%$");
+		void CreateCategory(const char* category, const char* pattern);
 
-		std::shared_ptr<spdlog::logger> GetLogger(const char* category) { return m_Loggers[category]; }
+		std::shared_ptr<spdlog::logger> GetLogger(const char* category)
+		{
+			return m_Loggers[category];
+		}
 
 	private:
 		std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> m_Loggers;
@@ -49,7 +52,7 @@ namespace Light { namespace Logger {
 		ModuleAPI(Module* module)
 		    : m_Module(module) { s_Module = m_Module; }
 
-		inline void CreateCategory(const char* category, const char* pattern = "%^[%H:%M:%S]%g@%! ==> %v%$") { m_Module->CreateCategory(category, pattern); }
+		inline void CreateCategory(const char* category, const char* pattern = "%^[%l][%H:%M:%S @ %n] => %v%$") { m_Module->CreateCategory(category, pattern); }
 
 		static inline std::shared_ptr<spdlog::logger> GetLogger(const char* category) { return s_Module->GetLogger(category); }
 

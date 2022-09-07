@@ -7,7 +7,7 @@ namespace Light { namespace Logger {
 
 	Module* ModuleAPI::s_Module = nullptr;
 
-	void Module::CreateCategory(const char* category, const char* pattern /* = "%^[%H:%M:%S]%g@%! ==> %v%$" */)
+	void Module::CreateCategory(const char* category, const char* pattern)
 	{
 		std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt(category);
 		logger->set_pattern(pattern);

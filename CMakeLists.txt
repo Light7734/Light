@@ -19,6 +19,8 @@ add_library(Mojula STATIC ${MOJULA_FILES})
 add_library(Exception STATIC ${EXCEPTION_FILES})
 add_library(Logger STATIC ${LOGGER_FILES})
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/spdlog)
+
 target_include_directories(
     Light
     PRIVATE ${CMAKE_SOURCE_DIR}/Light/Source
@@ -26,6 +28,7 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Exception
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
     PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/vendor/glfw/include
 )
 
 target_include_directories(
