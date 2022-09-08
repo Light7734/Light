@@ -9,6 +9,7 @@ namespace Light { namespace Logger {
 
 	void Module::CreateCategory(const char* category, const char* pattern)
 	{
+		spdlog::set_level(spdlog::level::trace);
 		std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt(category);
 		logger->set_pattern(pattern);
 		m_Loggers[category] = logger;
