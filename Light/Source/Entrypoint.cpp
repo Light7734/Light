@@ -1,6 +1,7 @@
 #include "Exception.hpp"
 #include "Logger.hpp"
 #include "Mojula.hpp"
+#include "Window.hpp"
 
 #include <unordered_map>
 #include <vector>
@@ -22,21 +23,17 @@ int main()
 		std::vector<Mojula::Module*> modules;
 		std::vector<Mojula::Module*> tickableModules;
 		std::unordered_map<uint64_t, Mojula::ModuleAPI*> modulesAPI;
-		Logger::ModuleAPI* loggerAPI;
 
 		////////////////////////////////////////////////////////////////
 		/// Create the modules and set up pointers to dependencies
 		{
 			CREATE_MODULE(Logger);
-			loggerAPI = static_cast<Logger::ModuleAPI*>(modulesAPI[69ull]);
-			loggerAPI->CreateCategory("Main");
-
-			LOG(Main, info, "Constructing module(s)...");
+			CREATE_MODULE(Window);
+			// CREATE_MODULE(Profiler);
+			// CREATE_MODULE(SplashScreen);
+			// CREATE_MODULE(VkSplashScreenRenderer);
 		}
 
-		LOG(Main, info, "Constructed {} module(s)", modules.size());
-
-		LOG(Main, info, "Storing modules APIs...");
 		for (auto* module : modules)
 		{
 			if (module->IsTickable())
@@ -50,31 +47,28 @@ int main()
 			}
 		}
 
+		for (auto* module : modules)
+		{
+			module->OnInit();
+		}
+
 		////////////////////////////////////////////////////////////////
 		/// Enter the game loop
 		{
-			LOG(Main, info, "Initializing module(s)...");
-			for (auto* module : modules)
-			{
-				module->OnInit();
-			}
-
-			LOG(Main, info, "Entering main loop with {} tickable module(s)", tickableModules.size());
-			while (true)
+			bool shouldTerminateApp = false;
+			while (!shouldTerminateApp)
 			{
 				for (auto* module : tickableModules)
 				{
 					module->OnUpdate();
+					shouldTerminateApp |= module->HasRequestedAppTermination();
 				}
-
-				break;
 			}
 		}
 
 		////////////////////////////////////////////////////////////////
 		/// Gracefully destruct everything
 		{
-			LOG(Main, info, "De-initializing {} module(s)... bye!", modules.size());
 			for (auto* module : modules) // do it in reverse order...
 			{
 				module->OnDeinit();

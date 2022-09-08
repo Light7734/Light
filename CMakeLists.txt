@@ -11,6 +11,7 @@ file(GLOB_RECURSE LIGHT_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Light/*)
 file(GLOB_RECURSE MOJULA_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Mojula/*)
 file(GLOB_RECURSE EXCEPTION_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Exception/*.cpp)
 file(GLOB_RECURSE LOGGER_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Logger/*)
+file(GLOB_RECURSE WINDOW_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Window/*)
 
 message(${EXCEPTION_FILES}})
 
@@ -18,17 +19,21 @@ add_executable(Light ${LIGHT_FILES})
 add_library(Mojula STATIC ${MOJULA_FILES})
 add_library(Exception STATIC ${EXCEPTION_FILES})
 add_library(Logger STATIC ${LOGGER_FILES})
+add_library(Window STATIC ${WINDOW_FILES})
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/spdlog)
+add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/glfw)
 
 target_include_directories(
     Light
     PRIVATE ${CMAKE_SOURCE_DIR}/Light/Source
+
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Exception
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Window
+
     PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
-    PRIVATE ${CMAKE_SOURCE_DIR}/vendor/glfw/include
 )
 
 target_include_directories(
@@ -44,20 +49,40 @@ target_include_directories(
 target_include_directories(
     Logger
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger/Source
+
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
+    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
+)
+
+target_include_directories(
+    Window
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Window/Source
+
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Exception
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula
+
     PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 
 target_link_libraries(
     Light
     PRIVATE Exception
-    PRIVATE Logger
     PRIVATE Mojula
-    PRIVATE spdlog
+    PRIVATE Logger
+    PRIVATE Window
 )
 
 target_link_libraries(
     Logger
     PRIVATE Mojula
+
     PRIVATE spdlog
+)
+
+target_link_libraries(
+    Window
+    PRIVATE Logger
+
+    PRIVATE glfw
 )

@@ -27,9 +27,11 @@ namespace Light { namespace Mojula {
 
 		virtual ~Module() = default;
 
+		virtual inline bool HasRequestedAppTermination() const { return false; }
+
 		virtual void StoreAPI(uint64_t module_uuid, class ModuleAPI* api) = 0;
 
-		//! The name might be a bit misleading here, OnConfig doesn't mean when the module is configured but rather called to change other module's config struct using their API calls
+		//! The name might be a bit misleading here, OnConfig doesn't mean when the module is configured but rather called to change other module's config struct using their API
 		virtual void OnConfig() = 0;
 		virtual void OnInit()   = 0;
 		virtual void OnUpdate() = 0;
