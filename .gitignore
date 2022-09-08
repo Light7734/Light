@@ -1,3 +1,7 @@
 # Directories in the root directory
 /Doxygen
 /Build
+
+.cache/
+
+.ccls-cache/
