@@ -1,5 +1,5 @@
-#include "Logger.hpp"
-#include "Mojula.hpp"
+#include "Logger/Module.hpp"
+#include "Mojula/Module.hpp"
 
 #include <utility>
 #include <vector>

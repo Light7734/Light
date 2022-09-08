@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mojula.hpp"
+#include "Mojula/Module.hpp"
 
 #include <memory>
 #include <spdlog/spdlog.h>

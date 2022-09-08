@@ -1,7 +1,7 @@
-#include "Exception.hpp"
-#include "Logger.hpp"
-#include "Mojula.hpp"
-#include "Window.hpp"
+#include "Exception/Module.hpp"
+#include "Logger/Module.hpp"
+#include "Mojula/Module.hpp"
+#include "Window/Module.hpp"
 
 #include <unordered_map>
 #include <vector>
