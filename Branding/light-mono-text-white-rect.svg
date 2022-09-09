@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="70.737183mm"
+   height="70.73716mm"
+   viewBox="0 0 70.737183 70.73716"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="drawing.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="4900.2499"
+     inkscape:cy="-84.145705"
+     inkscape:window-width="2536"
+     inkscape:window-height="1389"
+     inkscape:window-x="10"
+     inkscape:window-y="37"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid853" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1191.0436,4.8376902)">
+    <rect
+       style="fill:#dcdcdc;fill-opacity:1;stroke:#313131;stroke-width:0.819427;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:0;paint-order:stroke fill markers;stop-color:#000000"
+       id="rect4801"
+       width="69.91774"
+       height="69.91774"
+       x="1191.4532"
+       y="-4.4279766"
+       rx="4.6941295e-14"
+       ry="7.2217372e-14" />
+    <g
+       id="g5408">
+      <path
+         style="fill:none;stroke:#191919;stroke-width:0.884214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         d="m 1226.4122,17.300145 -9.3579,-11.6974251 h 18.7159 z"
+         id="path4803"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="fill:none;stroke:#191919;stroke-width:0.884214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         d="m 1226.4122,24.318597 -9.3579,-11.697424 -9.3579,11.697424 c 6.2386,0 18.8385,-1.05e-4 18.7158,0 z"
+         id="path4805"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="fill:none;stroke:#191919;stroke-width:0.884214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         d="m 1207.6963,24.318597 18.7159,18.715869 V 24.318597 Z"
+         id="path4807"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="fill:none;stroke:#191919;stroke-width:0.884214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         d="m 1245.1281,24.318597 -18.7159,18.715869 V 24.318597 Z"
+         id="path4809"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="fill:none;stroke:#191919;stroke-width:0.884214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         d="m 1245.1281,24.318597 -9.3579,-11.697424 -9.358,11.697424 c 6.2387,0 18.8385,-1.05e-4 18.7159,0 z"
+         id="path4811"
+         sodipodi:nodetypes="cccc" />
+      <g
+         id="g4819"
+         transform="translate(532.38724,-31.855593)"
+         style="fill:#191919;fill-opacity:1;stroke:#191919;stroke-opacity:1">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.7px;line-height:normal;font-family:Dustfine;-inkscape-font-specification:Dustfine;text-align:justify;text-decoration-color:#000000;direction:rtl;white-space:pre;fill:#191919;fill-opacity:1;stroke:#191919;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.8;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+           x="714.09729"
+           y="87.656792"
+           id="text4817"><tspan
+             sodipodi:role="line"
+             id="tspan4815"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.7px;font-family:'Ra Mono';-inkscape-font-specification:'Ra Mono';fill:#191919;fill-opacity:1;stroke:#191919;stroke-width:0.2;stroke-opacity:1"
+             x="714.09729"
+             y="87.656792">LIGHT</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
