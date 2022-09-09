@@ -51,6 +51,17 @@ target_include_directories(
 )
 
 ################################################################
+### TIME
+file(GLOB_RECURSE TIME_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Time/*)
+add_library(Time STATIC ${EXCEPTION_FILES})
+
+target_include_directories(
+    Time
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Time/Source
+)
+
+################################################################
 ### LOGGER
 file(GLOB_RECURSE LOGGER_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Logger/*)
 add_library(Logger STATIC ${LOGGER_FILES})
