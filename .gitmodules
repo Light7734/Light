@@ -4,3 +4,6 @@
 [submodule "Vendor/glfw"]
 	path = Vendor/glfw
 	url = git@github.com:glfw/glfw
+[submodule "Vendor/entt"]
+	path = Vendor/entt
+	url = git@github.com:skypjack/entt
