@@ -7,3 +7,6 @@
 [submodule "Vendor/entt"]
 	path = Vendor/entt
 	url = git@github.com:skypjack/entt
+[submodule "Vendor/imgui"]
+	path = Vendor/imgui
+	url = git@github.com:light7734/imgui
