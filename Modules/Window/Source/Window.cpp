@@ -1,5 +1,6 @@
 #include "Window.hpp"
 
+#include <Exception/Module.hpp>
 #include <GLFW/glfw3.h>
 
 #include "Base.hpp"
@@ -32,7 +33,7 @@ namespace Light { namespace Window {
 	{
 		m_LoggerAPI->CreateCategory("Window");
 
-		glfwInit();
+		ASSERT(glfwInit(), "Failed to initialize glfw");
 
 		// #TODO: Make mapping of glfw window hints and expose them as an enum in Window .hpp
 		// so you can write the defaults on the struct and not here...
@@ -59,6 +60,8 @@ namespace Light { namespace Window {
 
 		// #TODO: Add fullscreen support
 		m_Handle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.title.c_str(), NULL, NULL);
+		ASSERT(m_Handle, "Failed to create glfw window");
+
 		BindEvents();
 
 		glfwSetWindowPos(m_Handle,
