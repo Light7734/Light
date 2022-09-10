@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Base.hpp"
 
 #include <exception>
 #include <inttypes.h>

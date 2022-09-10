@@ -2,10 +2,12 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Base.hpp"
+
 namespace Light { namespace Window {
 
 	Module::Module()
-	    : Mojula::Module("Window", 420ull, { 69ull }, true)
+	    : Mojula::Module(MODULE_NAME, MODULE_UUID, { 69ull }, true)
 	{
 	}
 

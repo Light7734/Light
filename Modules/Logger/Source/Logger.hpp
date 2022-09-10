@@ -2,9 +2,12 @@
 
 #include "Mojula/Module.hpp"
 
-#include <memory>
 #include <spdlog/spdlog.h>
+
+#include <memory>
 #include <string>
+
+#include "Base.hpp"
 
 namespace Light { namespace Logger {
 
@@ -17,7 +20,7 @@ namespace Light { namespace Logger {
 	{
 	public:
 		Module()
-		    : Mojula::Module("Logger", 69ull, {}, false)
+		    : Mojula::Module(MODULE_NAME, MODULE_UUID, {}, false)
 		{
 		}
 

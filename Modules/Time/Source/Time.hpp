@@ -4,11 +4,16 @@
 
 #include <Mojula/Module.hpp>
 
+#include "Base.hpp"
+
 namespace Light { namespace Time {
 
 	class Module : public Mojula::Module
 	{
 	public:
+		Module()
+		    : Mojula::Module(MODULE_NAME, MODULE_UUID, {}, true) {}
+
 		virtual void StoreAPI(uint64_t module_uuid, class Mojula::ModuleAPI* api) final override {};
 
 		//! The name might be a bit misleading here, OnConfig doesn't mean when the module is configured but rather called to change other module's config struct using their API
