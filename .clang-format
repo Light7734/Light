@@ -12,25 +12,29 @@ BinPackParameters: 'true'
 SortIncludes: 'true'
 IncludeBlocks: Regroup
 IncludeCategories:
+    # Includes that MUST come first...
+    
+    # Includes that MUST come last...
+    - Regex: '"Base.hpp"'
+      Priority: 999
+
     # Current project
     - Regex: '"'
-      Priority: 001
-    
-    # Custom project categories...
-
-    # Third party dependecies
-    - Regex: '<'
-      Priority: 500
-    
-    # Custom dependencies categories...
+      Priority: 1
 
     # C++ includes
     - Regex: '[^.h .hpp]>'
-      Priority: 998
+      Priority: 800
 
     # C includes
     - Regex: '<[^/\n]+[.]h>'
-      Priority: 999
+      Priority: 801
+
+
+    # C includes
+    - Regex: '.+'
+      Priority: 500
+
 
 # Braces
 BreakBeforeBraces: Custom
