@@ -3,14 +3,12 @@
 #include <Exception/Module.hpp>
 #include <GLFW/glfw3.h>
 
-#include "Base.hpp"
-
 namespace Light {
 
 	WindowModule* Window::s_Module = nullptr;
 
 	WindowModule::WindowModule()
-	    : Module(MODULE_NAME, MODULE_UUID, { 69ull }, true)
+	    : Module(true)
 	{
 	}
 

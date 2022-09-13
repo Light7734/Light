@@ -6,8 +6,6 @@
 #include <sstream>
 #include <string>
 
-#include "Base.hpp"
-
 namespace Light { namespace Exception {
 
 	/**
@@ -21,20 +19,17 @@ namespace Light { namespace Exception {
 		/**
         * @param file        file that generated the exception
         * @param line        line that generated the exception
-        * @param module_uuid uuid of the module that generated the exception
-        * @param module_name name of the module that generated the exception
         * @param statement   stringified statement(or expression) that generated the exception
         * @param description detailed description of what went wrong
         */
-		Exception(const char* file, uint32_t line, uint64_t module_uuid, const char* module_name, const char* statement, const char* description)
-		    : m_File(file), m_Line(line), m_ModuleUUID(module_uuid), m_ModuleName(module_name), m_Statement(statement), m_Description(description) {}
+		Exception(const char* file, uint32_t line, const char* statement, const char* description)
+			: m_File(file), m_Line(line), m_Statement(statement), m_Description(description) {}
 
 		virtual const char* what()
 		{
 			std::ostringstream stream;
 
 			stream << "[ EXCEPTION ]:\n";
-			stream << "Module    -> " << m_ModuleName << "(" << m_ModuleUUID << ")\n";
 			stream << "Location  -> " << m_File << ":" << m_Line << '\n';
 			stream << "Statement -> " << m_Statement << '\n';
 			stream << "Description ->" << m_Description << '\n';
@@ -46,12 +41,10 @@ namespace Light { namespace Exception {
 		}
 
 	protected:
-		const char* m_File;          // !< file that generated the exception
-		const uint32_t m_Line;       // !< line that generated the exception
-		const uint64_t m_ModuleUUID; // !< uuid of the module that generated the exception
-		const char* m_ModuleName;    // !< name of the module that generated the exception
-		const char* m_Statement;     // !< stringified statement(or expression) that generated the exception
-		const char* m_Description;   // !< detailed description of what went wrong
+		const char* m_File;        // !< file that generated the exception
+		const uint32_t m_Line;     // !< line that generated the exception
+		const char* m_Statement;   // !< stringified statement(or expression) that generated the exception
+		const char* m_Description; // !< detailed description of what went wrong
 	};
 
 }} // namespace Light::Exception

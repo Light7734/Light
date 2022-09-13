@@ -4,15 +4,13 @@
 
 #include <Mojula/Module.hpp>
 
-#include "Base.hpp"
-
 namespace Light {
 
 	class TimeModule : public Module
 	{
 	public:
 		TimeModule()
-		    : Module(MODULE_NAME, MODULE_UUID, {}, true) {}
+		    : Module(true) {}
 
 		virtual ~TimeModule() {}
 

@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-#include "Base.hpp"
+#define LOGGER_DEFAULT_PATTERN "%^[%l][%H:%M:%S @ %n] => %v%$"
 
 namespace Light {
 
@@ -46,14 +46,14 @@ namespace Light {
 	{
 	public:
 		LoggerModule()
-		    : Module(MODULE_NAME, MODULE_UUID, {}, false)
-		{
-		}
+		    : Module(false)
+        {
+        }
 
 		virtual ~LoggerModule() {}
 
 		////////////////////////////////////////////////////////////////////////////////
-		// Mojula::Module Interface
+		// Module Interface
 		virtual void OnConfig() final override {}
 		virtual void OnInit() final override {}
 		virtual void OnUpdate() final override {}

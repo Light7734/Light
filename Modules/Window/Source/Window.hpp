@@ -4,8 +4,6 @@
 #include <utility>
 #include <vector>
 
-#include "Base.hpp"
-
 class GLFWwindow;
 
 namespace Light {

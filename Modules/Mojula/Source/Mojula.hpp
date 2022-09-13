@@ -15,13 +15,10 @@ namespace Light {
 	{
 	public:
 		/**
-         * @param name              name of the module
-         * @param uuid              uuid of the module
-         * @param dependencies_uuid uuid of the modules that this module depends on
          * @param tickable          does the module's Update function needs to be called every frame?
         */
-		Module(const char* name, uint64_t uuid, std::vector<uint64_t> dependencies_uuid = {}, bool tickable = false)
-		    : m_Name(name), m_UUID(uuid), m_DependenciesUUID(dependencies_uuid), m_Tickable(tickable) {}
+		Module(bool tickable = false)
+		    : m_Tickable(tickable) {}
 
 		Module(const Module&)            = delete;
 		Module& operator=(const Module&) = delete;
@@ -36,20 +33,9 @@ namespace Light {
 		virtual void OnUpdate() = 0;
 		virtual void OnDeinit() = 0;
 
-		inline const std::string& GetName() const { return m_Name; }
-
-		inline uint64_t GetUUID() const { return m_UUID; }
-
-		inline const std::vector<uint64_t>& GetDependenciesUUID() const { return m_DependenciesUUID; }
-
 		inline bool IsTickable() const { return m_Tickable; }
 
-	protected:
-		std::string m_Name;
-		const uint64_t m_UUID;
-
-		std::vector<uint64_t> m_DependenciesUUID = {};
-
+	private:
 		bool m_Tickable = false;
 	};
 
