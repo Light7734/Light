@@ -1,10 +1,11 @@
 #pragma once
 
 #include <inttypes.h>
+
 #include <string>
 #include <vector>
 
-namespace Light { namespace Mojula {
+namespace Light {
 
 	/**
     * \brief Base module class
@@ -29,8 +30,6 @@ namespace Light { namespace Mojula {
 
 		virtual inline bool HasRequestedAppTermination() const { return false; }
 
-		virtual void StoreAPI(uint64_t module_uuid, class ModuleAPI* api) = 0;
-
 		//! The name might be a bit misleading here, OnConfig doesn't mean when the module is configured but rather called to change other module's config struct using their API
 		virtual void OnConfig() = 0;
 		virtual void OnInit()   = 0;
@@ -54,13 +53,5 @@ namespace Light { namespace Mojula {
 		bool m_Tickable = false;
 	};
 
-	/**
-    * \brief Base module api class for exposing data &| functions to other modules
-    *
-    */
-	class ModuleAPI
-	{
-	};
 
-
-}} // namespace Light::Mojula
+} // namespace Light

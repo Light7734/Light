@@ -6,19 +6,18 @@
 
 #include "Base.hpp"
 
-namespace Light { namespace Time {
+namespace Light {
 
-	class Module : public Mojula::Module
+	class TimeModule : public Module
 	{
 	public:
-		Module()
-		    : Mojula::Module(MODULE_NAME, MODULE_UUID, {}, true) {}
+		TimeModule()
+		    : Module(MODULE_NAME, MODULE_UUID, {}, true) {}
 
-		virtual void StoreAPI(uint64_t module_uuid, class Mojula::ModuleAPI* api) final override {};
+		virtual ~TimeModule() {}
 
-		//! The name might be a bit misleading here, OnConfig doesn't mean when the module is configured but rather called to change other module's config struct using their API
-		virtual void OnConfig() final override;
-		virtual void OnInit() final override;
+		virtual void OnConfig() final override {}
+		virtual void OnInit() final override {}
 
 		virtual void OnUpdate() final override
 		{
@@ -30,8 +29,7 @@ namespace Light { namespace Time {
 			m_Timer.Reset();
 		}
 
-		virtual void OnDeinit() final override;
-
+		virtual void OnDeinit() final override {}
 
 		////////////////////////////////////////////////////////////////
 		//// API Functions
@@ -42,16 +40,20 @@ namespace Light { namespace Time {
 		double m_DeltaTime;
 	};
 
-	class ModuleAPI
+	class Time
 	{
 	public:
-		ModuleAPI(Module* module)
-		    : m_Module(module) {}
+		Time()  = delete;
+		~Time() = delete;
 
-		inline double GetDeltaTime() const { return m_Module->GetDeltaTime(); }
+		static void Init(TimeModule* module) { s_Module = module; }
+
+		static inline uint32_t SinceEpoch() { return time_point_cast<microseconds>(steady_clock::now()).time_since_epoch().count(); }
+
+		static inline double GetDeltaTime() { return s_Module->GetDeltaTime(); }
 
 	private:
-		Module* m_Module;
+		static TimeModule* s_Module;
 	};
 
-}} // namespace Light::Time
+} // namespace Light

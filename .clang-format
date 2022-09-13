@@ -65,7 +65,7 @@ ConstructorInitializerIndentWidth: '4'
 IndentCaseLabels: 'false'
 IndentWrappedFunctionNames: 'true'
 IndentPPDirectives: BeforeHash
-NamespaceIndentation: Inner
+NamespaceIndentation: All
 AccessModifierOffset: '-4'
 
 # Space

@@ -5,33 +5,34 @@
 
 #include "Base.hpp"
 
-namespace Light { namespace Window {
+namespace Light {
 
-	Module::Module()
-	    : Mojula::Module(MODULE_NAME, MODULE_UUID, { 69ull }, true)
+	WindowModule* Window::s_Module = nullptr;
+
+	WindowModule::WindowModule()
+	    : Module(MODULE_NAME, MODULE_UUID, { 69ull }, true)
 	{
 	}
 
-	Module::~Module()
+	WindowModule::~WindowModule()
 	{
 	}
 
-	bool Module::HasRequestedAppTermination() const
+	bool WindowModule::HasRequestedAppTermination() const
 	{
 		return glfwWindowShouldClose(m_Handle);
 	}
 
-	void Module::StoreAPI(uint64_t module_uuid, class Mojula::ModuleAPI* api)
+	void WindowModule::OnInit()
 	{
-		if (module_uuid == 69ull)
-		{
-			m_LoggerAPI = static_cast<Logger::ModuleAPI*>(api);
-		}
-	}
+		LoggerCategoryCreateInfo categoryInfo = {
+			"Window",               // name
+			LOGGER_DEFAULT_PATTERN, // pattern
+			LogType::eStdoutColor,  // type
+			NULL,                   // outputFile
+		};
 
-	void Module::OnInit()
-	{
-		m_LoggerAPI->CreateCategory("Window");
+		Logger::CreateCategory(categoryInfo);
 
 		ASSERT(glfwInit(), "Failed to initialize glfw");
 
@@ -54,9 +55,8 @@ namespace Light { namespace Window {
 		for (auto hint : m_Config.hints)
 		{
 			glfwWindowHint(hint.first, hint.second);
-			LOG(Window, trace, "Window hint, {} = {}", hint.first, hint.second);
+			Logger::Log("Window", LogLevel::eTrace, "Windo hint -> {} = {}", hint.first, hint.second);
 		}
-
 
 		// #TODO: Add fullscreen support
 		m_Handle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.title.c_str(), NULL, NULL);
@@ -71,12 +71,12 @@ namespace Light { namespace Window {
 		SetVisibility(true);
 	}
 
-	void Module::OnUpdate()
+	void WindowModule::OnUpdate()
 	{
 		glfwPollEvents();
 	}
 
-	void Module::BindEvents()
+	void WindowModule::BindEvents()
 	{
 		////////////////////////////////////////////////////////////////
 		/// Mouse events
@@ -115,7 +115,7 @@ namespace Light { namespace Window {
 	}
 
 
-	void Module::MakeCentered()
+	void WindowModule::MakeCentered()
 	{
 		auto [monitorX, monitorY]          = GetMonitorPosition();
 		auto [monitorWidth, monitorHeight] = GetMonitorSize();
@@ -126,7 +126,7 @@ namespace Light { namespace Window {
 		                 monitorY + (monitorHeight - windowHeight) / 2);
 	}
 
-	void Module::SetVisibility(bool visible, bool toggle)
+	void WindowModule::SetVisibility(bool visible, bool toggle)
 	{
 		visible = toggle ? !m_Visible : visible;
 
@@ -140,7 +140,7 @@ namespace Light { namespace Window {
 		}
 	}
 
-	std::pair<int32_t, int32_t> Module::GetMonitorPosition() const
+	std::pair<int32_t, int32_t> WindowModule::GetMonitorPosition() const
 	{
 		int32_t count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -153,7 +153,7 @@ namespace Light { namespace Window {
 		return position;
 	}
 
-	std::pair<int32_t, int32_t> Module::GetMonitorSize() const
+	std::pair<int32_t, int32_t> WindowModule::GetMonitorSize() const
 	{
 		int32_t count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -164,7 +164,7 @@ namespace Light { namespace Window {
 	}
 
 
-	std::pair<int32_t, int32_t> Module::GetWindowSize() const
+	std::pair<int32_t, int32_t> WindowModule::GetWindowSize() const
 	{
 		std::pair<int32_t, int32_t> size;
 		glfwGetWindowSize(m_Handle, &size.first, &size.second);
@@ -172,11 +172,11 @@ namespace Light { namespace Window {
 		return size;
 	}
 
-	std::pair<int32_t, int32_t> Module::GetWindowPosition() const
+	std::pair<int32_t, int32_t> WindowModule::GetWindowPosition() const
 	{
 		std::pair<int32_t, int32_t> position;
 		glfwGetWindowPos(m_Handle, &position.first, &position.second);
 		return position;
 	}
 
-}} // namespace Light::Window
+} // namespace Light

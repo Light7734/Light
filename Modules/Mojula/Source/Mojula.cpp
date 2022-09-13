@@ -1,4 +1,4 @@
 #include "Mojula.hpp"
 
-namespace Light { namespace Mojula {
-}} // namespace Light::Mojula
+namespace Light {
+} // namespace Light

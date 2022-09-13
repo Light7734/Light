@@ -26,6 +26,7 @@ target_link_libraries(
     PRIVATE Mojula
     PRIVATE Logger
     PRIVATE Window
+    PRIVATE Time
 )
 
 ################################################################
@@ -52,8 +53,8 @@ target_include_directories(
 
 ################################################################
 ### TIME
-file(GLOB_RECURSE TIME_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Time/*)
-add_library(Time STATIC ${EXCEPTION_FILES})
+file(GLOB_RECURSE TIME_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Time/*.cpp)
+add_library(Time STATIC ${TIME_FILES})
 
 target_include_directories(
     Time

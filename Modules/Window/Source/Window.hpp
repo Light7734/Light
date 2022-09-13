@@ -8,9 +8,9 @@
 
 class GLFWwindow;
 
-namespace Light { namespace Window {
+namespace Light {
 
-	struct ModuleConfig
+	struct WindowModuleConfig
 	{
 		std::vector<std::pair<int, int>> hints = {};
 
@@ -28,15 +28,13 @@ namespace Light { namespace Window {
 	};
 
 	// \brief
-	class Module : public Mojula::Module
+	class WindowModule : public Module
 	{
 	public:
-		Module();
-		~Module();
+		WindowModule();
+		~WindowModule();
 
 		virtual bool HasRequestedAppTermination() const final override;
-
-		virtual void StoreAPI(uint64_t module_uuid, class Mojula::ModuleAPI* api) final override;
 
 		virtual void OnConfig() final override {}
 		virtual void OnInit() final override;
@@ -60,35 +58,35 @@ namespace Light { namespace Window {
 		inline bool IsVisible() const { return m_Visible; }
 
 	private:
-		Window::ModuleConfig m_Config = {};
-
-		Logger::ModuleAPI* m_LoggerAPI = {};
+		WindowModuleConfig m_Config = {};
 
 		bool m_Visible;
 
 		GLFWwindow* m_Handle = {};
 	};
 
-	class ModuleAPI : public Mojula::ModuleAPI
+	class Window
 	{
 	public:
-		ModuleAPI(Module* module)
-		    : m_Module(module) {}
+		Window()  = delete;
+		~Window() = delete;
 
-		void MakeCentered() { m_Module->MakeCentered(); }
+		static void Init(WindowModule* module) { s_Module = module; }
 
-		void SetVisibility(bool visible, bool toggle = false) { m_Module->SetVisibility(visible, toggle); }
+		static void MakeCentered() { s_Module->MakeCentered(); }
 
-		inline std::pair<int32_t, int32_t> GetMonitorPosition() const { return m_Module->GetMonitorPosition(); }
+		static void SetVisibility(bool visible, bool toggle = false) { s_Module->SetVisibility(visible, toggle); }
 
-		inline std::pair<int32_t, int32_t> GetMonitorSize() const { return m_Module->GetMonitorSize(); }
+		static inline std::pair<int32_t, int32_t> GetMonitorPosition() { return s_Module->GetMonitorPosition(); }
 
-		inline std::pair<int32_t, int32_t> GetWindowSize() const { return m_Module->GetWindowSize(); }
+		static inline std::pair<int32_t, int32_t> GetMonitorSize() { return s_Module->GetMonitorSize(); }
 
-		inline std::pair<int32_t, int32_t> GetWindowPosition() const { return m_Module->GetWindowPosition(); }
+		static inline std::pair<int32_t, int32_t> GetWindowSize() { return s_Module->GetWindowSize(); }
+
+		static inline std::pair<int32_t, int32_t> GetWindowPosition() { return s_Module->GetWindowPosition(); }
 
 	private:
-		Module* m_Module;
+		static WindowModule* s_Module;
 	};
 
-}} // namespace Light::Window
+} // namespace Light

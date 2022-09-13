@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Base.hpp"
+#include <inttypes.h>
 
 #include <exception>
-#include <inttypes.h>
 #include <sstream>
 #include <string>
+
+#include "Base.hpp"
 
 namespace Light { namespace Exception {
 
@@ -25,7 +26,7 @@ namespace Light { namespace Exception {
         * @param statement   stringified statement(or expression) that generated the exception
         * @param description detailed description of what went wrong
         */
-		Exception(const char* file, uint32_t line, uint32_t module_uuid, const char* module_name, const char* statement, const char* description)
+		Exception(const char* file, uint32_t line, uint64_t module_uuid, const char* module_name, const char* statement, const char* description)
 		    : m_File(file), m_Line(line), m_ModuleUUID(module_uuid), m_ModuleName(module_name), m_Statement(statement), m_Description(description) {}
 
 		virtual const char* what()

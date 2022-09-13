@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace Light { namespace Time {
+namespace Light {
 
 	using namespace std::chrono;
 
@@ -21,5 +21,5 @@ namespace Light { namespace Time {
 	private:
 		time_point<steady_clock> m_Start;
 	};
-}
-} // namespace Light::Time
+
+} // namespace Light

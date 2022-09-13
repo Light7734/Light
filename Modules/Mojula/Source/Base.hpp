@@ -1,2 +1,2 @@
 #define MODULE_NAME ""
-#define MODULE_UUID 0
+#define MODULE_UUID 0ull

@@ -1,17 +1,19 @@
 #include "Exception/Module.hpp"
 #include "Logger/Module.hpp"
 #include "Mojula/Module.hpp"
+#include "Time/Module.hpp"
 #include "Window/Module.hpp"
 
 #include <unordered_map>
+
 #include <vector>
 
-#define CREATE_MODULE(ModuleName)                                          \
-	{                                                                      \
-		using namespace Light;                                             \
-		ModuleName::Module* module = new ModuleName::Module();             \
-		modules.push_back(module);                                         \
-		modulesAPI[module->GetUUID()] = new ModuleName::ModuleAPI(module); \
+#define CREATE_MODULE(ModuleName)                              \
+	{                                                          \
+		using namespace Light;                                 \
+		ModuleName##Module* module = new ModuleName##Module(); \
+		modules.push_back(module);                             \
+		ModuleName::Init(module);                              \
 	}
 
 int main()
@@ -20,18 +22,15 @@ int main()
 
 	try
 	{
-		std::vector<Mojula::Module*> modules;
-		std::vector<Mojula::Module*> tickableModules;
-		std::unordered_map<uint64_t, Mojula::ModuleAPI*> modulesAPI;
+		std::vector<Module*> modules;
+		std::vector<Module*> tickableModules;
 
 		////////////////////////////////////////////////////////////////
 		/// Create the modules and set up pointers to dependencies
 		{
 			CREATE_MODULE(Logger);
 			CREATE_MODULE(Window);
-			// CREATE_MODULE(Profiler);
-			// CREATE_MODULE(SplashScreen);
-			// CREATE_MODULE(VkSplashScreenRenderer);
+			CREATE_MODULE(Time);
 		}
 
 		for (auto* module : modules)
@@ -39,11 +38,6 @@ int main()
 			if (module->IsTickable())
 			{
 				tickableModules.push_back(module);
-			}
-
-			for (uint64_t dependencyUUID : module->GetDependenciesUUID())
-			{
-				module->StoreAPI(dependencyUUID, modulesAPI[dependencyUUID]);
 			}
 		}
 
