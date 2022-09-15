@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Logger/Module.hpp"
 #include "Mojula/Module.hpp"
 
 #include <unordered_map>
@@ -57,9 +58,25 @@ namespace Light {
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
 		virtual void OnConfig() final override {}
-		virtual void OnInit() final override {}
+
+		virtual void OnInit() final override
+		{
+			LoggerCategoryCreateInfo categoryInfo {
+				"FileManager",          // name
+				LOGGER_DEFAULT_PATTERN, // pattern
+				LogType::eStdoutColor,  // type
+				NULL,                   // outputFile
+			};
+
+			Logger::CreateCategory(categoryInfo);
+		}
+
 		virtual void OnUpdate() final override {}
-		virtual void OnDeinit() final override {}
+
+		virtual void OnDeinit() final override
+		{
+			m_TxtFiles.clear();
+		}
 
 		////////////////////////////////////////////////////////////////
 		/// Exposed functions
@@ -73,7 +90,10 @@ namespace Light {
 	class FileManager
 	{
 	public:
-		FileManager(FileManagerModule* module) { s_Module = module; }
+		FileManager()  = delete;
+		~FileManager() = delete;
+
+		static void Init(FileManagerModule* module) { s_Module = module; }
 
 		////////////////////////////////////////////////////////////////
 		/// CREATE
