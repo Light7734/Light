@@ -1,11 +1,14 @@
 #include "Exception/Module.hpp"
+#include "FileManager/Module.hpp"
 #include "Logger/Module.hpp"
 #include "Mojula/Module.hpp"
+#include "Profiler/Module.hpp"
 #include "Time/Module.hpp"
 #include "Window/Module.hpp"
 
 #include <unordered_map>
 
+#include <iostream>
 #include <vector>
 
 #define CREATE_MODULE(ModuleName)                              \
@@ -26,11 +29,13 @@ int main()
 		std::vector<Module*> tickableModules;
 
 		////////////////////////////////////////////////////////////////
-		/// Create the modules and set up pointers to dependencies
+		/// Create and initialize the modules
 		{
 			CREATE_MODULE(Logger);
 			CREATE_MODULE(Window);
 			CREATE_MODULE(Time);
+			CREATE_MODULE(FileManager);
+			CREATE_MODULE(Profiler);
 		}
 
 		for (auto* module : modules)
@@ -47,11 +52,13 @@ int main()
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// Enter the game loop
+		/// Main game loop
 		{
 			bool shouldTerminateApp = false;
 			while (!shouldTerminateApp)
 			{
+				PROFILE_SCOPE("Frame");
+
 				for (auto* module : tickableModules)
 				{
 					module->OnUpdate();

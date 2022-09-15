@@ -8,6 +8,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/bin)
 
+
+include_directories(
+    ${CMAKE_SOURCE_DIR}/Modules/
+
+    ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include/
+    ${CMAKE_SOURCE_DIR}/Vendor/glfw/include/
+    ${CMAKE_SOURCE_DIR}/Vendor/entt/src/
+    ${CMAKE_SOURCE_DIR}/Vendor/imgui/
+)
+
 ################################################################
 ### LIGHT
 file(GLOB_RECURSE LIGHT_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Light/*)
@@ -27,6 +37,7 @@ target_link_libraries(
     PRIVATE Logger
     PRIVATE Window
     PRIVATE Time
+    PRIVATE Profiler
 )
 
 ################################################################
@@ -36,7 +47,6 @@ add_library(Mojula STATIC ${MOJULA_FILES})
 
 target_include_directories(
     Mojula
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Mojula/Source
 )
 
@@ -47,7 +57,6 @@ add_library(Exception STATIC ${EXCEPTION_FILES})
 
 target_include_directories(
     Exception
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Exception/Source
 )
 
@@ -58,7 +67,6 @@ add_library(Time STATIC ${TIME_FILES})
 
 target_include_directories(
     Time
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Time/Source
 )
 
@@ -70,8 +78,23 @@ add_library(FileManager STATIC ${FILEMANAGER_FILES})
 
 target_include_directories(
     FileManager
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/FileManager/Source
+
+)
+
+################################################################
+### PROFILER
+file(GLOB_RECURSE PROFILER_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Profiler/*)
+add_library(Profiler STATIC ${PROFILER_FILES})
+
+target_include_directories(
+    Profiler
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Profiler/Source
+)
+target_link_libraries(
+    Profiler
+    PRIVATE FileManager
+    PRIVATE Logger
 )
 
 ################################################################
@@ -81,7 +104,6 @@ add_library(Logger STATIC ${LOGGER_FILES})
 
 target_include_directories(
     Logger
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger/Source
 
     PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
@@ -100,7 +122,6 @@ add_library(Window STATIC ${WINDOW_FILES})
 
 target_include_directories(
     Window
-    PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Window/Source
 
     PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
