@@ -7,13 +7,18 @@ public:
 	Paths()  = delete;
 	~Paths() = delete;
 
-	static std::filesystem::path GetLogDir()
+	static std::filesystem::path GetTempDir()
 	{
-		return "Temp/Log";
+		return "Temp/";
 	}
 
-	constexpr std::string GetEngine()
+	static std::filesystem::path GetLogsDir()
 	{
-		return "/";
+		return GetTempDir() / "Log/";
+	}
+
+	static std::filesystem::path GetCurrentDir()
+	{
+		return std::filesystem::current_path();
 	}
 };
