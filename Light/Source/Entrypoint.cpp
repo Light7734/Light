@@ -61,16 +61,16 @@ int main()
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// Gracefully destruct everything
+		/// Gracefully destroy everything
 		{
-			for (auto* module : modules) // do it in reverse order...
+			for (size_t i = modules.size() - 1ull; i < modules.size(); i--)
 			{
-				module->OnDeinit();
+				modules[i]->OnDeinit();
 			}
 
-			for (auto* module : modules) // do it in reverse order...
+			for (size_t i = modules.size() - 1ull; i < modules.size(); i--)
 			{
-				delete module;
+				delete modules[i];
 			}
 		}
 	}
