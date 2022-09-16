@@ -11,7 +11,9 @@ An idiot admires complexity, a genius admires simplicity.
 ## What's all this?
 Light Engine is a data-driven and highly-modularized game engine written in modern C++
   
-## Development Guideline
+## Development Guideline 
+[![Trello Board](https://img.shields.io/badge/TRELLO-white?style=for-the-badge&logo=trello&logoColor=e21a41)](https://trello.com/b/gwn3xVEi/light-engine)
+
 **Commit syntax follows the** [***conventional commits specification***](https://www.conventionalcommits.org/en/v1.0.0/):
 
 ```
