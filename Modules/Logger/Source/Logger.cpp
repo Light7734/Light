@@ -8,6 +8,31 @@ namespace Light {
 
 	LoggerModule* Logger::s_Module = nullptr;
 
+	LoggerModule::LoggerModule()
+	    : Module(false)
+	{
+	}
+
+	LoggerModule::~LoggerModule()
+	{
+	}
+
+	void LoggerModule::OnConfig()
+	{
+	}
+
+	void LoggerModule::OnInit()
+	{
+	}
+
+	void LoggerModule::OnUpdate()
+	{
+	}
+
+	void LoggerModule::OnDeinit()
+	{
+	}
+
 	void LoggerModule::CreateCategory(const LoggerCategoryCreateInfo& info)
 	{
 		spdlog::set_level(spdlog::level::trace);
@@ -15,10 +40,10 @@ namespace Light {
 
 		switch (info.type)
 		{
-		case LogType::eStdoutColor:
+		case LoggerType::eStdoutColor:
 			logger = spdlog::stdout_color_mt(info.name);
 			break;
-		case LogType::eFileAsync:
+		case LoggerType::eFileAsync:
 			logger = spdlog::basic_logger_mt<spdlog::async_factory>(info.name, info.outputFile);
 			break;
 

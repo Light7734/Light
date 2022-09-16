@@ -12,6 +12,8 @@
 
 namespace Light {
 
+	/** @brief Manipulates txt files 
+     * @todo Docs */
 	class TxtFile
 	{
 	public:
@@ -31,8 +33,6 @@ namespace Light {
 			m_InputStream << txt;
 		}
 
-		////////////////////////////////////////////////////////////////
-		/// Operators
 		friend std::ofstream& operator<<(std::shared_ptr<TxtFile> file, const std::string& txt)
 		{
 			file->Append(txt);
@@ -43,49 +43,29 @@ namespace Light {
 		std::ofstream m_InputStream = {};
 	};
 
-
-	////////////////////////////////////////////////////////////////
-	/// File data types
-
+	/** @brief Manages file manipulation by creating file handler classes */
 	class FileManagerModule : public Module
 	{
 	public:
-		FileManagerModule()
-		    : Module(false) {}
-
-		virtual ~FileManagerModule() {}
+		FileManagerModule();
+		virtual ~FileManagerModule() override;
 
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
-		virtual void OnConfig() final override {}
-
-		virtual void OnInit() final override
-		{
-			LoggerCategoryCreateInfo categoryInfo {
-				"FileManager",          // name
-				LOGGER_DEFAULT_PATTERN, // pattern
-				LogType::eStdoutColor,  // type
-				NULL,                   // outputFile
-			};
-
-			Logger::CreateCategory(categoryInfo);
-		}
-
-		virtual void OnUpdate() final override {}
-
-		virtual void OnDeinit() final override
-		{
-			m_TxtFiles.clear();
-		}
+		virtual void OnConfig() override;
+		virtual void OnInit() override;
+		virtual void OnUpdate() override;
+		virtual void OnDeinit() override;
 
 		////////////////////////////////////////////////////////////////
-		/// Exposed functions
+		/// Facade Functions
 		std::shared_ptr<TxtFile> CreateTxt(std::filesystem::path path);
 
 	private:
 		std::unordered_map<std::filesystem::path, std::shared_ptr<TxtFile>> m_TxtFiles;
 	};
 
+	/** @brief Facade of the FileManagerModule */
 
 	class FileManager
 	{
@@ -93,10 +73,16 @@ namespace Light {
 		FileManager()  = delete;
 		~FileManager() = delete;
 
-		static void Init(FileManagerModule* module) { s_Module = module; }
+		/** @brief Initialize the facade with the actual module 
+         * @note Do not manually call this */
+		static void Init(FileManagerModule* module)
+		{
+			ASSERT(!s_Module, "FileManager::Init was called more than once");
+			s_Module = module;
+		}
 
-		////////////////////////////////////////////////////////////////
-		/// CREATE
+		/** @brief Creates txt file handle 
+         *  @param path Path to txt file */
 		static std::shared_ptr<TxtFile> CreateTxt(std::filesystem::path path)
 		{
 			return s_Module->CreateTxt(path);

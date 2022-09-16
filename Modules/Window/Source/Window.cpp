@@ -21,13 +21,17 @@ namespace Light {
 		return glfwWindowShouldClose(m_Handle);
 	}
 
+	void WindowModule::OnConfig()
+	{
+	}
+
 	void WindowModule::OnInit()
 	{
 		LoggerCategoryCreateInfo categoryInfo = {
-			"Window",               // name
-			LOGGER_DEFAULT_PATTERN, // pattern
-			LogType::eStdoutColor,  // type
-			NULL,                   // outputFile
+			"Window",                 // name
+			LOGGER_DEFAULT_PATTERN,   // pattern
+			LoggerType::eStdoutColor, // type
+			NULL,                     // outputFile
 		};
 
 		Logger::CreateCategory(categoryInfo);
@@ -53,14 +57,14 @@ namespace Light {
 		for (auto hint : m_Config.hints)
 		{
 			glfwWindowHint(hint.first, hint.second);
-			Logger::Log("Window", LogLevel::eTrace, "Windo hint -> {} = {}", hint.first, hint.second);
+			LOG("Window", LogLvl::eTrace, "Window hint -> {} = {}", hint.first, hint.second);
 		}
 
 		// #TODO: Add fullscreen support
 		m_Handle = glfwCreateWindow(m_Config.width, m_Config.height, m_Config.title.c_str(), NULL, NULL);
 		ASSERT(m_Handle, "Failed to create glfw window");
 
-		BindEvents();
+		BindGlfwCallbacks();
 
 		glfwSetWindowPos(m_Handle,
 		                 monitorX + (monitorWidth - m_Config.width) / 2,
@@ -71,11 +75,19 @@ namespace Light {
 
 	void WindowModule::OnUpdate()
 	{
+		glfwSwapBuffers(m_Handle);
 		glfwPollEvents();
 	}
 
-	void WindowModule::BindEvents()
+	void WindowModule::OnDeinit()
 	{
+		glfwDestroyWindow(m_Handle);
+	}
+
+	void WindowModule::BindGlfwCallbacks()
+	{
+		// @todo Bind callbacks
+
 		////////////////////////////////////////////////////////////////
 		/// Mouse events
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* window, double xpos, double ypos) {
@@ -143,8 +155,6 @@ namespace Light {
 		int32_t count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 
-		const GLFWvidmode* vidmode = glfwGetVideoMode(monitors[0]);
-
 		std::pair<int32_t, int32_t> position;
 		glfwGetMonitorPos(monitors[0], &position.first, &position.second);
 
@@ -157,7 +167,6 @@ namespace Light {
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitors[0]);
-
 		return { vidmode->width, vidmode->height };
 	}
 
@@ -166,7 +175,6 @@ namespace Light {
 	{
 		std::pair<int32_t, int32_t> size;
 		glfwGetWindowSize(m_Handle, &size.first, &size.second);
-
 		return size;
 	}
 

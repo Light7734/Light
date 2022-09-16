@@ -1,24 +1,32 @@
 #include <filesystem>
 #include <string>
 
-class Paths
-{
-public:
-	Paths()  = delete;
-	~Paths() = delete;
+namespace Light {
 
-	static std::filesystem::path GetTempDir()
+	/** @brief Used to retrive directory paths */
+	class Paths
 	{
-		return "Temp/";
-	}
+	public:
+		Paths()  = delete;
+		~Paths() = delete;
 
-	static std::filesystem::path GetLogsDir()
-	{
-		return GetTempDir() / "Log/";
-	}
+		/** @return Path to temporary files directory */
+		static std::filesystem::path GetTempDir()
+		{
+			return "Temp/";
+		}
 
-	static std::filesystem::path GetCurrentDir()
-	{
-		return std::filesystem::current_path();
-	}
-};
+		/** @return Path to Log files directory */
+		static std::filesystem::path GetLogsDir()
+		{
+			return GetTempDir() / "Log/";
+		}
+
+		/** @return Current path */
+		static std::filesystem::path GetCurrentDir()
+		{
+			return std::filesystem::current_path();
+		}
+	};
+
+} // namespace Light

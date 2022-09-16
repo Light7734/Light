@@ -1,4 +1,5 @@
-# Project configuration
+################################################################
+### PROJECT
 cmake_minimum_required(VERSION 3.16)
 
 project(Light)
@@ -8,15 +9,36 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/bin)
 
-
 include_directories(
     ${CMAKE_SOURCE_DIR}/Modules/
 
+    # Vendor
     ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include/
     ${CMAKE_SOURCE_DIR}/Vendor/glfw/include/
     ${CMAKE_SOURCE_DIR}/Vendor/entt/src/
     ${CMAKE_SOURCE_DIR}/Vendor/imgui/
 )
+
+################################################################
+### PLATFORM
+add_compile_definitions(LIGHT_PLATFORM_NAME ${CMAKE_SYSTEM_NAME})
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_compile_definitions(LIGHT_PLATFORM_LINUX)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    add_compile_definitions(LIGHT_PLATFORM_MAC)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_compile_definitions(LIGHT_PLATFORM_WINDOWS)
+endif ()
+
+################################################################
+### BUILD TYPE 
+#TODO:
+add_compile_definitions(LIGHT_BUILD_TYPE_DEBUG)
+
+################################################################
+### Vendor
+add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/spdlog)
+add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/glfw)
 
 ################################################################
 ### LIGHT
@@ -27,8 +49,6 @@ target_include_directories(
     Light
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules
     PRIVATE ${CMAKE_SOURCE_DIR}/Light/Source
-
-    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 target_link_libraries(
     Light
@@ -105,8 +125,6 @@ add_library(Logger STATIC ${LOGGER_FILES})
 target_include_directories(
     Logger
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Logger/Source
-
-    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 target_link_libraries(
     Logger
@@ -123,8 +141,6 @@ add_library(Window STATIC ${WINDOW_FILES})
 target_include_directories(
     Window
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Window/Source
-
-    PRIVATE ${CMAKE_SOURCE_DIR}/Vendor/spdlog/include
 )
 target_link_libraries(
     Window
@@ -132,8 +148,3 @@ target_link_libraries(
 
     PRIVATE glfw
 )
-
-################################################################
-### Vendor
-add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/spdlog)
-add_subdirectory(${CMAKE_SOURCE_DIR}/Vendor/glfw)

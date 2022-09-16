@@ -81,7 +81,7 @@ int main()
 			}
 		}
 	}
-	catch (Exception::Exception exception)
+	catch (Exception exception)
 	{
 		////////////////////////////////////////////////////////////////
 		/// Save user progress if applicable
@@ -89,7 +89,7 @@ int main()
 		////////////////////////////////////////////////////////////////
 		/// Show/save information about what went wrong, where and when
 
-		// return exception.code
+		return -1;
 	}
 
 	return 0;

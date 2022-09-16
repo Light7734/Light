@@ -1,36 +1,28 @@
 #pragma once
 
+#include "Exception/Module.hpp"
+#include "Mojula/Module.hpp"
 #include "Timer.hpp"
-
-#include <Mojula/Module.hpp>
 
 namespace Light {
 
-	class TimeModule : public Module
+	/** @brief Keeps track of the time related things */
+	class TimeModule final : public Module
 	{
 	public:
-		TimeModule()
-		    : Module(true) {}
+		TimeModule();
+		virtual ~TimeModule() override;
 
-		virtual ~TimeModule() {}
-
-		virtual void OnConfig() final override {}
-		virtual void OnInit() final override {}
-
-		virtual void OnUpdate() final override
-		{
-			static bool firstFrame = true;
-
-			m_DeltaTime = firstFrame ? 1.0 / 60.0 : m_Timer.ElapsedTime();
-			firstFrame  = false;
-
-			m_Timer.Reset();
-		}
-
-		virtual void OnDeinit() final override {}
 
 		////////////////////////////////////////////////////////////////
-		//// API Functions
+		/// Module Interface
+		virtual void OnConfig() override;
+		virtual void OnInit() override;
+		virtual void OnUpdate() override;
+		virtual void OnDeinit() override;
+
+		////////////////////////////////////////////////////////////////
+		//// Facade Fuctions
 		inline double GetDeltaTime() const { return m_DeltaTime; }
 
 	private:
@@ -38,16 +30,25 @@ namespace Light {
 		double m_DeltaTime;
 	};
 
+	/** @brief Facade of the TimeModule */
 	class Time
 	{
 	public:
 		Time()  = delete;
 		~Time() = delete;
 
-		static void Init(TimeModule* module) { s_Module = module; }
+		/** @brief Initialize the facade with the actual module 
+         * @note Do not manually call this */
+		static void Init(TimeModule* module)
+		{
+			ASSERT(!s_Module, "Time::Init was called more than once");
+			s_Module = module;
+		}
 
+		/** @return Elapsed time since epoch */
 		static inline uint32_t SinceEpoch() { return time_point_cast<microseconds>(steady_clock::now()).time_since_epoch().count(); }
 
+		/** @return Frame delta time */
 		static inline double GetDeltaTime() { return s_Module->GetDeltaTime(); }
 
 	private:

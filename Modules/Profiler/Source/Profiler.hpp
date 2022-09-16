@@ -8,12 +8,18 @@
 #include <memory>
 #include <ostream>
 
+/** @def PROFILE_SCOPE(name)
+ * Measures the execution time of the entire scope and submits the results to the Profiler
+ * @note Use on the first line of the scope
+ * @param name Name of the scope
+*/
 #define PROFILE_SCOPE(name)                    PROFILE_SCOPE_INDIRECTION(name, __LINE__)
 #define PROFILE_SCOPE_INDIRECTION(name, line)  PROFILE_SCOPE_INDIRECTION2(name, line)
 #define PROFILE_SCOPE_INDIRECTION2(name, line) ::Light::ScopeProfiler scope_profiler##line(name)
 
 namespace Light {
 
+	/** @todo Docs */
 	struct ScopeResult
 	{
 		const char* name;
@@ -21,87 +27,57 @@ namespace Light {
 		uint32_t threadID;
 	};
 
-	class ProfilerModule : public Module
+	/** @brief Handles measuring the execution speed of functions
+     * @todo Measure things other than the execution speed
+     */
+	class ProfilerModule final : public Module
 	{
 	public:
-		virtual void OnConfig() final override {}
-		virtual void OnInit() final override
-		{
-			m_OutputFile = FileManager::CreateTxt(Paths::GetLogsDir() / "ProfileResult.json");
-			m_OutputFile << "{\"traceEvents\":[";
+		////////////////////////////////////////////////////////////////
+		/// Module Interface
+		virtual void OnConfig() override;
+		virtual void OnInit() override;
+		virtual void OnUpdate() override;
+		virtual void OnDeinit() override;
 
-			m_OutputFile << "{";
-			m_OutputFile << "\"name\":\"init\",";
-			m_OutputFile << "\"cat\": \"scope\",";
-			m_OutputFile << "\"ph\": \"X\",";
-			m_OutputFile << "\"ts\":" << Time::SinceEpoch() << ",";
-			m_OutputFile << "\"dur\":" << 0ull << ",";
-			m_OutputFile << "\"pid\":0,";
-			m_OutputFile << "\"tid\":" << 0ull << "";
-			m_OutputFile << "}";
-		}
-
-		virtual void OnDeinit() final override
-		{
-			m_OutputFile << "]}";
-			m_OutputFile.reset();
-		}
-
-		virtual void OnUpdate() final override {}
-
-		void SubmitScopeResult(const ScopeResult& scope_result)
-		{
-			std::ostringstream sstream;
-			m_OutputFile << ",{";
-			m_OutputFile << "\"name\":\"" << scope_result.name << "\",";
-			m_OutputFile << "\"cat\": \"scope\",";
-			m_OutputFile << "\"ph\": \"X\",";
-			m_OutputFile << "\"ts\":" << scope_result.start << ",";
-			m_OutputFile << "\"dur\":" << scope_result.duration << ",";
-			m_OutputFile << "\"pid\":0,";
-			m_OutputFile << "\"tid\":" << scope_result.threadID << "";
-			m_OutputFile << "}";
-		}
+		////////////////////////////////////////////////////////////////
+		/// Facade Functions
+		void SubmitScopeResult(const ScopeResult& scope_result);
 
 	private:
 		std::shared_ptr<TxtFile> m_OutputFile = {};
 	};
 
+	/** @brief Facade of the ProfilerModule */
 	class Profiler
 	{
 	public:
 		Profiler()  = delete;
 		~Profiler() = delete;
 
-		static void Init(ProfilerModule* module) { s_Module = module; }
+		/** @brief Initialize the facade with the actual module 
+         * @note Do not manually call this */
+		static void Init(ProfilerModule* module)
+		{
+			ASSERT(!s_Module, "Profiler::Init was called more than once");
+			s_Module = module;
+		}
 
+		/** @brief Submits the scope profiler's results to be saved 
+         * @param scope_result The scope profiler's result */
 		static inline void SubmitScopeResult(const ScopeResult& scope_result) { s_Module->SubmitScopeResult(scope_result); }
 
 	private:
 		static ProfilerModule* s_Module;
 	};
 
+	/** @brief Measures execution speed of a scope using RAII magic */
 	class ScopeProfiler
 	{
 	public:
-		ScopeProfiler(const char* name)
-		    : m_Name(name), m_Start(Time::SinceEpoch())
-		{
-		}
+		ScopeProfiler(const char* name);
 
-		~ScopeProfiler()
-		{
-			const uint64_t duration = Time::SinceEpoch() - m_Start;
-
-			const ScopeResult result {
-				m_Name,   // name
-				m_Start,  // start
-				duration, // duration
-				{}        // threadID
-			};
-
-			Profiler::SubmitScopeResult(result);
-		}
+		~ScopeProfiler();
 
 	private:
 		const char* m_Name;

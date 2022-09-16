@@ -6,6 +6,7 @@ namespace Light {
 
 	using namespace std::chrono;
 
+	/** @brief Tells the elapsed time from construction/reset */
 	class Timer
 	{
 	public:
@@ -14,8 +15,10 @@ namespace Light {
 		{
 		}
 
+		/** @brief Restarts the timer to now */
 		inline void Reset() { m_Start = steady_clock::now(); }
 
+		/** @return Elapsed time from construction/reset to now */
 		inline double ElapsedTime() const { return duration_cast<milliseconds>(steady_clock::now() - m_Start).count() / 1000.0; }
 
 	private:
