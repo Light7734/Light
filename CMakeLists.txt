@@ -58,6 +58,7 @@ target_link_libraries(
     PRIVATE Window
     PRIVATE Time
     PRIVATE Profiler
+    PRIVATE Events
 )
 
 ################################################################
@@ -81,6 +82,16 @@ target_include_directories(
 )
 
 ################################################################
+### EVENTS
+file(GLOB_RECURSE EVENTS_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Events/*)
+add_library(Events  STATIC ${EVENTS_FILES})
+
+target_include_directories(
+    Events
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Events/Source
+)
+
+################################################################
 ### TIME
 file(GLOB_RECURSE TIME_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/Time/*.cpp)
 add_library(Time STATIC ${TIME_FILES})
@@ -99,7 +110,6 @@ add_library(FileManager STATIC ${FILEMANAGER_FILES})
 target_include_directories(
     FileManager
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/FileManager/Source
-
 )
 
 ################################################################
@@ -145,6 +155,7 @@ target_include_directories(
 target_link_libraries(
     Window
     PRIVATE Logger
+    PRIVATE Events
 
     PRIVATE glfw
 )
