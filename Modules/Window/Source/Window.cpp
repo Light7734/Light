@@ -44,7 +44,6 @@ namespace Light {
 		                                              { GLFW_DECORATED, GLFW_FALSE },
 		                                              { GLFW_VISIBLE, GLFW_FALSE } });
 
-
 		auto [monitorX, monitorY]          = GetMonitorPosition();
 		auto [monitorWidth, monitorHeight] = GetMonitorSize();
 
@@ -53,7 +52,6 @@ namespace Light {
 			m_Config.width  = monitorWidth * m_Config.monitorWidthMultiplier;
 			m_Config.height = m_Config.width / m_Config.aspectRatio;
 		}
-
 		for (auto hint : m_Config.hints)
 		{
 			glfwWindowHint(hint.first, hint.second);
@@ -70,7 +68,20 @@ namespace Light {
 		                 monitorX + (monitorWidth - m_Config.width) / 2,
 		                 monitorY + (monitorHeight - m_Config.height) / 2);
 
+		glfwSetWindowUserPointer(m_Handle, &m_Notifiers);
+
 		SetVisibility(true);
+
+		AddEventListener<WindowModule>(WindowEventType::eMouseMove, &WindowModule::Test, this);
+	}
+
+
+	bool WindowModule::Test(std::pair<double, double> pos)
+	{
+		auto [x, y] = pos;
+		LOG("Window", LogLvl::eTrace, "Mouse moved {} - {}", x, y);
+
+		return false;
 	}
 
 	void WindowModule::OnUpdate()
@@ -86,44 +97,51 @@ namespace Light {
 
 	void WindowModule::BindGlfwCallbacks()
 	{
-		// @todo Bind callbacks
-
 		////////////////////////////////////////////////////////////////
 		/// Mouse events
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* window, double xpos, double ypos) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->mouseMove.Invoke({ xpos, ypos });
 		});
 
-		glfwSetMouseButtonCallback(m_Handle, [](GLFWwindow* window, int button, int action, int mods) {
+		glfwSetMouseButtonCallback(m_Handle, [](GLFWwindow* window, int32_t button, int32_t action, int32_t mods) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->mouseButton.Invoke(std::forward<int32_t>(button), std::forward<int32_t>(action), std::forward<int32_t>(mods));
 		});
 
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* window, double xoffset, double yoffset) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->mouseScroll.Invoke({ xoffset, yoffset });
 		});
 
 		////////////////////////////////////////////////////////////////
 		/// Keyboard events
-		glfwSetKeyCallback(m_Handle, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+		glfwSetKeyCallback(m_Handle, [](GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int mods) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->key.Invoke(std::forward<int32_t>(key), std::forward<int32_t>(scancode), std::forward<int32_t>(action), std::forward<int32_t>(mods));
+
 			if (key == GLFW_KEY_ESCAPE)
 				glfwSetWindowShouldClose(window, true);
 		});
 
-		glfwSetCharCallback(m_Handle, [](GLFWwindow* window, unsigned int character) {
+		glfwSetCharCallback(m_Handle, [](GLFWwindow* window, uint32_t character) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->character.Invoke(std::forward<uint32_t>(character));
 		});
 
 		////////////////////////////////////////////////////////////////
 		/// Window events
-		glfwSetWindowPosCallback(m_Handle, [](GLFWwindow* window, int xpos, int ypos) {
+		glfwSetWindowPosCallback(m_Handle, [](GLFWwindow* window, int32_t xpos, int32_t ypos) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->windowMove.Invoke({ xpos, ypos });
 		});
 
-		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* window, int width, int height) {
+		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* window, int32_t width, int32_t height) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->windowResize.Invoke({ width, height });
 		});
 
 		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* window) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->windowClose.Invoke();
 		});
 
-		glfwSetWindowFocusCallback(m_Handle, [](GLFWwindow* window, int focus) {
+		glfwSetWindowFocusCallback(m_Handle, [](GLFWwindow* window, int32_t focus) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->windowFocus.Invoke(std::forward<int32_t>(focus));
 		});
 	}
-
 
 	void WindowModule::MakeCentered()
 	{
