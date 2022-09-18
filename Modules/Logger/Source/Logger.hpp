@@ -18,8 +18,7 @@
  * @param category The category of the log
  * @param log_level a ::Light::LogLvl value ; the severity of the log
  * @param ... Variadic arguments to be logged
- * @note @a category should be log category created witihn the invoking module
-*/
+ * @note @a category should be log category created witihn the invoking module */
 #define LOG(category, log_level, ...) ::Light::Logger::Log(category, log_level, __VA_ARGS__)
 
 namespace Light {
@@ -79,43 +78,39 @@ namespace Light {
 
 	private:
 		std::unordered_map<std::string, std::shared_ptr<spdlog::logger>> m_Loggers;
-	};
 
-	/** @brief Facade of LoggerModule*/
-	class Logger
-	{
 	public:
-		Logger()  = delete;
-		~Logger() = delete;
-
-		/** @brief Initialize the facade with the actual module 
-         * @note Do not manually call this */
-		static void Init(LoggerModule* module)
+		/** @brief Facade of LoggerModule*/
+		class Facade
 		{
-			ASSERT(!s_Module, "Logger::Init was called more than once")
-			s_Module = module;
-		}
+			friend LoggerModule;
 
-		/** @brief Creates a logging category that can be acessed using info.name in Logger functions 
-         * @param info [self-explanatory] */
-		static inline std::shared_ptr<spdlog::logger> CreateCategory(const LoggerCategoryCreateInfo& info)
-		{
-			s_Module->CreateCategory(info);
-			return s_Module->GetLogger(info.name);
-		}
+		public:
+			Facade()  = delete;
+			~Facade() = delete;
 
-		/** @brief Logs formatted string to the console */
-		template<typename... Args>
-		static void Log(const char* category, LogLvl level, spdlog::format_string_t<Args...> fmt, Args&&... targs)
-		{
-			s_Module->GetLogger(category)->log(spdlog::level::trace, fmt, std::forward<Args>(targs)...);
-		}
+			/** @brief Creates a logging category that can be acessed using info.name in Logger functions 
+             * @param info [self-explanatory] */
+			static std::shared_ptr<spdlog::logger> CreateCategory(const LoggerCategoryCreateInfo& info);
 
-		/** @return Logger named @a category */
-		static inline std::shared_ptr<spdlog::logger> GetLogger(const char* category) { return s_Module->GetLogger(category); }
+			/** @brief Logs formatted string to the console */
+			template<typename... Args>
+			static inline void Log(const char* category, LogLvl level, spdlog::format_string_t<Args...> fmt, Args&&... targs)
+			{
+				self->m_Loggers[category]->log(spdlog::level::trace, fmt, std::forward<Args>(targs)...);
+			}
 
-	private:
-		static LoggerModule* s_Module;
+			/** @return Logger named @a category */
+			static inline std::shared_ptr<spdlog::logger> GetLogger(const char* category)
+			{
+				return self->m_Loggers[category];
+			}
+
+		private:
+			static LoggerModule* self;
+		};
 	};
+
+	using Logger = LoggerModule::Facade;
 
 } // namespace Light

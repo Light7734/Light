@@ -2,11 +2,12 @@
 
 namespace Light {
 
-	TimeModule* Time::s_Module = nullptr;
+	TimeModule* Time::self = nullptr;
 
 	TimeModule::TimeModule()
 	    : Module(true)
 	{
+		Time::self = this;
 	}
 
 	TimeModule::~TimeModule()

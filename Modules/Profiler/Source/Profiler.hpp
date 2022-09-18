@@ -11,8 +11,7 @@
 /** @def PROFILE_SCOPE(name)
  * Measures the execution time of the entire scope and submits the results to the Profiler
  * @note Use on the first line of the scope
- * @param name Name of the scope
-*/
+ * @param name Name of the scope */
 #define PROFILE_SCOPE(name)                    PROFILE_SCOPE_INDIRECTION(name, __LINE__)
 #define PROFILE_SCOPE_INDIRECTION(name, line)  PROFILE_SCOPE_INDIRECTION2(name, line)
 #define PROFILE_SCOPE_INDIRECTION2(name, line) ::Light::ScopeProfiler scope_profiler##line(name)
@@ -33,6 +32,9 @@ namespace Light {
 	class ProfilerModule final : public Module
 	{
 	public:
+		ProfilerModule();
+		virtual ~ProfilerModule() override;
+
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
 		virtual void OnConfig() override;
@@ -40,36 +42,29 @@ namespace Light {
 		virtual void OnUpdate() override;
 		virtual void OnDeinit() override;
 
-		////////////////////////////////////////////////////////////////
-		/// Facade Functions
-		void SubmitScopeResult(const ScopeResult& scope_result);
-
 	private:
 		std::shared_ptr<TxtFile> m_OutputFile = {};
-	};
 
-	/** @brief Facade of the ProfilerModule */
-	class Profiler
-	{
 	public:
-		Profiler()  = delete;
-		~Profiler() = delete;
-
-		/** @brief Initialize the facade with the actual module 
-         * @note Do not manually call this */
-		static void Init(ProfilerModule* module)
+		/** @brief Facade of the ProfilerModule */
+		class Facade
 		{
-			ASSERT(!s_Module, "Profiler::Init was called more than once");
-			s_Module = module;
-		}
+			friend ProfilerModule;
 
-		/** @brief Submits the scope profiler's results to be saved 
-         * @param scope_result The scope profiler's result */
-		static inline void SubmitScopeResult(const ScopeResult& scope_result) { s_Module->SubmitScopeResult(scope_result); }
+		public:
+			Facade()  = delete;
+			~Facade() = delete;
 
-	private:
-		static ProfilerModule* s_Module;
+			/** @brief Submits the scope profiler's results to be saved 
+             * @param scope_result The scope profiler's result */
+			static void SubmitScopeResult(const ScopeResult& scope_result);
+
+		private:
+			static ProfilerModule* self;
+		};
 	};
+
+	using Profiler = ProfilerModule::Facade;
 
 	/** @brief Measures execution speed of a scope using RAII magic */
 	class ScopeProfiler

@@ -2,7 +2,18 @@
 
 namespace Light {
 
-	ProfilerModule* Profiler::s_Module = {};
+	ProfilerModule* Profiler::self = {};
+
+
+	ProfilerModule::ProfilerModule()
+	{
+		Profiler::self = this;
+	}
+
+	ProfilerModule::~ProfilerModule()
+	{
+		Profiler::self = {};
+	}
 
 	void ProfilerModule::OnConfig()
 	{
@@ -34,18 +45,18 @@ namespace Light {
 		m_OutputFile.reset();
 	}
 
-	void ProfilerModule::SubmitScopeResult(const ScopeResult& scope_result)
+	void ProfilerModule::Facade::SubmitScopeResult(const ScopeResult& scope_result)
 	{
 		std::ostringstream sstream;
-		m_OutputFile << ",{";
-		m_OutputFile << "\"name\":\"" << scope_result.name << "\",";
-		m_OutputFile << "\"cat\": \"scope\",";
-		m_OutputFile << "\"ph\": \"X\",";
-		m_OutputFile << "\"ts\":" << scope_result.start << ",";
-		m_OutputFile << "\"dur\":" << scope_result.duration << ",";
-		m_OutputFile << "\"pid\":0,";
-		m_OutputFile << "\"tid\":" << scope_result.threadID << "";
-		m_OutputFile << "}";
+		self->m_OutputFile << ",{";
+		self->m_OutputFile << "\"name\":\"" << scope_result.name << "\",";
+		self->m_OutputFile << "\"cat\": \"scope\",";
+		self->m_OutputFile << "\"ph\": \"X\",";
+		self->m_OutputFile << "\"ts\":" << scope_result.start << ",";
+		self->m_OutputFile << "\"dur\":" << scope_result.duration << ",";
+		self->m_OutputFile << "\"pid\":0,";
+		self->m_OutputFile << "\"tid\":" << scope_result.threadID << "";
+		self->m_OutputFile << "}";
 	}
 
 	ScopeProfiler::ScopeProfiler(const char* name)

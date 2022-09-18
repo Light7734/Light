@@ -13,7 +13,6 @@ namespace Light {
 		TimeModule();
 		virtual ~TimeModule() override;
 
-
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
 		virtual void OnConfig() override;
@@ -21,38 +20,31 @@ namespace Light {
 		virtual void OnUpdate() override;
 		virtual void OnDeinit() override;
 
-		////////////////////////////////////////////////////////////////
-		//// Facade Fuctions
-		inline double GetDeltaTime() const { return m_DeltaTime; }
-
 	private:
 		Timer m_Timer;
 		double m_DeltaTime;
-	};
 
-	/** @brief Facade of the TimeModule */
-	class Time
-	{
 	public:
-		Time()  = delete;
-		~Time() = delete;
-
-		/** @brief Initialize the facade with the actual module 
-         * @note Do not manually call this */
-		static void Init(TimeModule* module)
+		/** @brief Facade of the TimeModule */
+		class Facade
 		{
-			ASSERT(!s_Module, "Time::Init was called more than once");
-			s_Module = module;
-		}
+			friend TimeModule;
 
-		/** @return Elapsed time since epoch */
-		static inline uint32_t SinceEpoch() { return time_point_cast<microseconds>(steady_clock::now()).time_since_epoch().count(); }
+		public:
+			Facade()  = delete;
+			~Facade() = delete;
 
-		/** @return Frame delta time */
-		static inline double GetDeltaTime() { return s_Module->GetDeltaTime(); }
+			/** @return Elapsed time since epoch */
+			static inline uint32_t SinceEpoch() { return time_point_cast<microseconds>(steady_clock::now()).time_since_epoch().count(); }
 
-	private:
-		static TimeModule* s_Module;
+			/** @return Frame delta time */
+			static inline double GetDeltaTime() { return self->m_DeltaTime; }
+
+		private:
+			static TimeModule* self;
+		};
 	};
+
+	using Time = TimeModule::Facade;
 
 } // namespace Light

@@ -52,88 +52,6 @@ namespace Light {
 		virtual void OnUpdate() override;
 		virtual void OnDeinit() override;
 
-		////////////////////////////////////////////////////////////////
-		/// Facade: Event Bindings
-		template<typename T>
-		inline void Bind_MouseMove(bool (T::*func)(std::pair<double, double>), T* instance)
-		{
-			m_Notifiers.mouseMove.AddListener(std::bind(func, instance, std::placeholders::_1));
-		}
-
-		template<typename T>
-		inline void Bind_MouseButton(bool (T::*func)(int32_t, int32_t, int32_t), T* instance)
-		{
-			m_Notifiers.mouseButton.AddListener(std::bind(func, instance, _1, _2, _3));
-		}
-
-		template<typename T>
-		inline void Bind_MouseScroll(bool (T::*func)(std::pair<double, double>), T* instance)
-		{
-			m_Notifiers.mouseScroll.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_MouseEnter(bool (T::*func)(int32_t), T* instance)
-		{
-			m_Notifiers.mouseEnter.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_Key(bool (T::*func)(int32_t, int32_t, int32_t, int32_t), T* instance)
-		{
-			m_Notifiers.key.AddListener(std::bind(func, instance, _1, _2, _3, _4));
-		}
-
-		template<typename T>
-		inline void Bind_Char(bool (T::*func)(uint32_t), T* instance)
-		{
-			m_Notifiers.character.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_WindowMove(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance)
-		{
-			m_Notifiers.windowMove.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_WindowResize(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance)
-		{
-			m_Notifiers.windowResize.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_WindowFocus(bool (T::*func)(int32_t), T* instance)
-		{
-			m_Notifiers.windowFocus.AddListener(std::bind(func, instance, _1));
-		}
-
-		template<typename T>
-		inline void Bind_WindowClose(bool (T::*func)(), T* instance)
-		{
-			m_Notifiers.windowClose.AddListener(std::bind(func, instance));
-		}
-
-		template<typename T>
-		inline void Bind_FileDrop(bool (T::*func)(int, const char**), T* instance)
-		{
-			m_Notifiers.fileDrop.AddListener(std::bind(func, instance, _1, _2));
-		}
-
-		////////////////////////////////////////////////////////////////
-		/// Facade Functions
-		void MakeCentered();
-
-		bool Test(std::pair<double, double> pos);
-
-		void SetVisibility(bool visible, bool toggle = false);
-
-		std::pair<int32_t, int32_t> GetMonitorPosition() const;
-		std::pair<int32_t, int32_t> GetMonitorSize() const;
-
-		std::pair<int32_t, int32_t> GetWindowSize() const;
-		std::pair<int32_t, int32_t> GetWindowPosition() const;
-
 		inline bool IsVisible() const
 		{
 			return m_Visible;
@@ -166,82 +84,56 @@ namespace Light {
 
 			Notifier<int, const char**> fileDrop = {};
 		} m_Notifiers = {};
-	};
 
-	/** @brief Facade of the WindowModule */
-	class Window
-	{
-	public:
-	public:
-		Window()  = delete;
-		~Window() = delete;
 
-		/** @brief Initialize the facade with the actual module 
-         * @note Do not manually call this */
-		static void Init(WindowModule* module)
+	public:
+		/** @brief Facade of the WindowModule */
+		class Facade
 		{
-			ASSERT(!s_Module, "Window::Init was called more than once");
-			s_Module = module;
-		}
+			friend WindowModule;
 
-		////////////////////////////////////////////////////////////////
-		/// Event Bindings
-		/// @todo Docs
-		template<typename T>
-		static inline void Bind_MouseMove(bool (T::*func)(std::pair<double, double>), T* instance) { s_Module->Bind_MouseMove<T>(func, instance); }
+		public:
+			Facade()  = delete;
+			~Facade() = delete;
 
-		template<typename T>
-		static inline void Bind_MouseButton(bool (T::*func)(int32_t, int32_t, int32_t), T* instance) { s_Module->Bind_MouseButton<T>(func, instance); }
+			/// @todo Docs
+			STATIC_NOTIF_BINDING(MouseMove, self->m_Notifiers.mouseMove, 1, std::pair<double, double>);
+			STATIC_NOTIF_BINDING(MouseButton, self->m_Notifiers.mouseButton, 3, int32_t, int32_t, int32_t);
+			STATIC_NOTIF_BINDING(MouseScroll, self->m_Notifiers.mouseScroll, 1, std::pair<double, double>);
+			STATIC_NOTIF_BINDING(MouseEnter, self->m_Notifiers.mouseEnter, 1, int32_t);
+			STATIC_NOTIF_BINDING(Key, self->m_Notifiers.key, 4, int32_t, int32_t, int32_t, int32_t);
+			STATIC_NOTIF_BINDING(Char, self->m_Notifiers.character, 1, uint32_t);
+			STATIC_NOTIF_BINDING(WindowMove, self->m_Notifiers.windowMove, 1, std::pair<int32_t, int32_t>);
+			STATIC_NOTIF_BINDING(WindowResize, self->m_Notifiers.windowResize, 1, std::pair<int32_t, int32_t>);
+			STATIC_NOTIF_BINDING(WindowFocus, self->m_Notifiers.windowFocus, 1, int32_t);
+			STATIC_NOTIF_BINDING(WindowClose, self->m_Notifiers.windowClose, 0);
+			STATIC_NOTIF_BINDING(FileDrop, self->m_Notifiers.fileDrop, 2, int, const char**);
 
-		template<typename T>
-		static inline void Bind_MouseScroll(bool (T::*func)(std::pair<double, double>), T* instance) { s_Module->Bind_MouseScroll<T>(func, instance); }
+			/** @brief Centers the window */
+			static void MakeCentered();
 
-		template<typename T>
-		static inline void Bind_MouseEnter(bool (T::*func)(int32_t), T* instance) { s_Module->Bind_MouseEnter<T>(func, instance); }
+			/** @brief Set/Toggle visiblity of the window
+            * @param visible Wether or not to make the window visible
+            * @param toggle  Ignore the @a visible param and toggle the current state of visibility */
+			static void SetVisibility(bool visible, bool toggle = false);
 
-		template<typename T>
-		static inline void Bind_Key(bool (T::*func)(int32_t, int32_t, int32_t, int32_t), T* instance) { s_Module->Bind_Key<T>(func, instance); }
+			/** @return Position of the monitor on the virtual desktop in screen coordinates */
+			static std::pair<int32_t, int32_t> GetMonitorPosition();
 
-		template<typename T>
-		static inline void Bind_Char(bool (T::*func)(uint32_t), T* instance) { s_Module->Bind_Char<T>(func, instance); }
+			/** @return Size of the video mode in screen coordinates */
+			static std::pair<int32_t, int32_t> GetMonitorSize();
 
-		template<typename T>
-		static inline void Bind_WindowMove(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance) { s_Module->Bind_WindowMove<T>(func, instance); }
+			/** @return Size of the content area(not framebuffer) of the window in screen coordinates */
+			static std::pair<int32_t, int32_t> GetWindowSize();
 
-		template<typename T>
-		static inline void Bind_WindowResize(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance) { s_Module->Bind_WindowResize<T>(func, instance); }
+			/** @return Position of the upper-left corner of the content area in screen coordinates */
+			static std::pair<int32_t, int32_t> GetWindowPosition();
 
-		template<typename T>
-		static inline void Bind_WindowFocus(bool (T::*func)(int32_t), T* instance) { s_Module->Bind_WindowFocus<T>(func, instance); }
-
-		template<typename T>
-		static inline void Bind_WindowClose(bool (T::*func)(), T* instance) { s_Module->Bind_WindowClose<T>(func, instance); }
-
-		template<typename T>
-		static inline void Bind_FileDrop(bool (T::*func)(int, const char**), T* instance) { s_Module->Bind_FileDrop<T>(func, instance); }
-
-		/** @brief Centers the window */
-		static inline void MakeCentered() { s_Module->MakeCentered(); }
-
-		/** @brief Set/Toggle visiblity of the window
-        * @param visible Wether or not to make the window visible
-        * @param toggle  Ignore the @a visible param and toggle the current state of visibility */
-		static inline void SetVisibility(bool visible, bool toggle = false) { s_Module->SetVisibility(visible, toggle); }
-
-		/** @return Position of the monitor on the virtual desktop in screen coordinates */
-		static inline std::pair<int32_t, int32_t> GetMonitorPosition() { return s_Module->GetMonitorPosition(); }
-
-		/** @return Size of the video mode in screen coordinates */
-		static inline std::pair<int32_t, int32_t> GetMonitorSize() { return s_Module->GetMonitorSize(); }
-
-		/** @return Size of the content area(not framebuffer) of the window in screen coordinates */
-		static inline std::pair<int32_t, int32_t> GetWindowSize() { return s_Module->GetWindowSize(); }
-
-		/** @return Position of the upper-left corner of the content area in screen coordinates */
-		static inline std::pair<int32_t, int32_t> GetWindowPosition() { return s_Module->GetWindowPosition(); }
-
-	private:
-		static WindowModule* s_Module;
+		private:
+			static WindowModule* self;
+		};
 	};
+
+	using Window = WindowModule::Facade;
 
 } // namespace Light

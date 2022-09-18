@@ -6,15 +6,17 @@
 
 namespace Light {
 
-	LoggerModule* Logger::s_Module = nullptr;
+	LoggerModule* Logger::self = {};
 
 	LoggerModule::LoggerModule()
 	    : Module(false)
 	{
+		Logger::self = this;
 	}
 
 	LoggerModule::~LoggerModule()
 	{
+		Logger::self = {};
 	}
 
 	void LoggerModule::OnConfig()
@@ -33,7 +35,7 @@ namespace Light {
 	{
 	}
 
-	void LoggerModule::CreateCategory(const LoggerCategoryCreateInfo& info)
+	std::shared_ptr<spdlog::logger> LoggerModule::Facade::CreateCategory(const LoggerCategoryCreateInfo& info)
 	{
 		spdlog::set_level(spdlog::level::trace);
 		std::shared_ptr<spdlog::logger> logger;
@@ -51,7 +53,9 @@ namespace Light {
 		}
 
 		logger->set_pattern(info.pattern);
-		m_Loggers[info.name] = logger;
+		self->m_Loggers[info.name] = logger;
+
+		return logger;
 	}
 
 } // namespace Light

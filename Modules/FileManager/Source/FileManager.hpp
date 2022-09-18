@@ -57,39 +57,29 @@ namespace Light {
 		virtual void OnUpdate() override;
 		virtual void OnDeinit() override;
 
-		////////////////////////////////////////////////////////////////
-		/// Facade Functions
-		std::shared_ptr<TxtFile> CreateTxt(std::filesystem::path path);
-
 	private:
 		std::unordered_map<std::filesystem::path, std::shared_ptr<TxtFile>> m_TxtFiles;
-	};
 
-	/** @brief Facade of the FileManagerModule */
-
-	class FileManager
-	{
 	public:
-		FileManager()  = delete;
-		~FileManager() = delete;
+		/** @brief Facade of the FileManagerModule */
 
-		/** @brief Initialize the facade with the actual module 
-         * @note Do not manually call this */
-		static void Init(FileManagerModule* module)
+		class Facade
 		{
-			ASSERT(!s_Module, "FileManager::Init was called more than once");
-			s_Module = module;
-		}
+			friend FileManagerModule;
 
-		/** @brief Creates txt file handle 
-         *  @param path Path to txt file */
-		static std::shared_ptr<TxtFile> CreateTxt(std::filesystem::path path)
-		{
-			return s_Module->CreateTxt(path);
-		}
+		public:
+			Facade()  = delete;
+			~Facade() = delete;
 
-	private:
-		static FileManagerModule* s_Module;
+			/** @brief Creates txt file handle 
+             *  @param path Path to txt file */
+			static std::shared_ptr<TxtFile> CreateTxt(std::filesystem::path path);
+
+		private:
+			static FileManagerModule* self;
+		};
 	};
+
+	using FileManager = FileManagerModule::Facade;
 
 } // namespace Light

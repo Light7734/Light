@@ -5,15 +5,25 @@
 
 namespace Light {
 
-	WindowModule* Window::s_Module = nullptr;
+	static bool Test(std::pair<double, double> pos)
+	{
+		auto [x, y] = pos;
+		LOG("Window", LogLvl::eTrace, "Mouse moved {} - {}", x, y);
+
+		return false;
+	}
+
+	WindowModule* Window::self = nullptr;
 
 	WindowModule::WindowModule()
 	    : Module(true)
 	{
+		WindowModule::Facade::self = this;
 	}
 
 	WindowModule::~WindowModule()
 	{
+		WindowModule::Facade::self = nullptr;
 	}
 
 	bool WindowModule::HasRequestedAppTermination() const
@@ -44,8 +54,8 @@ namespace Light {
 		                                              { GLFW_DECORATED, GLFW_FALSE },
 		                                              { GLFW_VISIBLE, GLFW_FALSE } });
 
-		auto [monitorX, monitorY]          = GetMonitorPosition();
-		auto [monitorWidth, monitorHeight] = GetMonitorSize();
+		auto [monitorX, monitorY]          = Window::GetMonitorPosition();
+		auto [monitorWidth, monitorHeight] = Window::GetMonitorSize();
 
 		if (m_Config.sizeRelativeToMonitor)
 		{
@@ -70,17 +80,8 @@ namespace Light {
 
 		glfwSetWindowUserPointer(m_Handle, &m_Notifiers);
 
-		SetVisibility(true);
-
-		Bind_MouseMove(&WindowModule::Test, this);
-	}
-
-	bool WindowModule::Test(std::pair<double, double> pos)
-	{
-		auto [x, y] = pos;
-		LOG("Window", LogLvl::eTrace, "Mouse moved {} - {}", x, y);
-
-		return false;
+		Window::SetVisibility(true);
+		Window::BindStatic_MouseMove(&Test);
 	}
 
 	void WindowModule::OnUpdate()
@@ -152,32 +153,32 @@ namespace Light {
 		});
 	}
 
-	void WindowModule::MakeCentered()
+	void WindowModule::Facade::MakeCentered()
 	{
 		auto [monitorX, monitorY]          = GetMonitorPosition();
 		auto [monitorWidth, monitorHeight] = GetMonitorSize();
 		auto [windowWidth, windowHeight]   = GetWindowSize();
 
-		glfwSetWindowPos(m_Handle,
+		glfwSetWindowPos(self->m_Handle,
 		                 monitorX + (monitorWidth - windowWidth) / 2,
 		                 monitorY + (monitorHeight - windowHeight) / 2);
 	}
 
-	void WindowModule::SetVisibility(bool visible, bool toggle)
+	void WindowModule::Facade::SetVisibility(bool visible, bool toggle)
 	{
-		visible = toggle ? !m_Visible : visible;
+		visible = toggle ? !self->m_Visible : visible;
 
 		if (visible)
 		{
-			glfwShowWindow(m_Handle);
+			glfwShowWindow(self->m_Handle);
 		}
 		else
 		{
-			glfwHideWindow(m_Handle);
+			glfwHideWindow(self->m_Handle);
 		}
 	}
 
-	std::pair<int32_t, int32_t> WindowModule::GetMonitorPosition() const
+	std::pair<int32_t, int32_t> WindowModule::Facade::GetMonitorPosition()
 	{
 		int32_t count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -188,7 +189,7 @@ namespace Light {
 		return position;
 	}
 
-	std::pair<int32_t, int32_t> WindowModule::GetMonitorSize() const
+	std::pair<int32_t, int32_t> WindowModule::Facade::GetMonitorSize()
 	{
 		int32_t count;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -198,17 +199,17 @@ namespace Light {
 	}
 
 
-	std::pair<int32_t, int32_t> WindowModule::GetWindowSize() const
+	std::pair<int32_t, int32_t> WindowModule::Facade::GetWindowSize()
 	{
 		std::pair<int32_t, int32_t> size;
-		glfwGetWindowSize(m_Handle, &size.first, &size.second);
+		glfwGetWindowSize(self->m_Handle, &size.first, &size.second);
 		return size;
 	}
 
-	std::pair<int32_t, int32_t> WindowModule::GetWindowPosition() const
+	std::pair<int32_t, int32_t> WindowModule::Facade::GetWindowPosition()
 	{
 		std::pair<int32_t, int32_t> position;
-		glfwGetWindowPos(m_Handle, &position.first, &position.second);
+		glfwGetWindowPos(self->m_Handle, &position.first, &position.second);
 		return position;
 	}
 

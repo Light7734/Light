@@ -16,7 +16,6 @@
 		using namespace Light;                                 \
 		ModuleName##Module* module = new ModuleName##Module(); \
 		modules.push_back(module);                             \
-		ModuleName::Init(module);                              \
 	}
 
 int main()
