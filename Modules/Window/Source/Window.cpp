@@ -72,9 +72,8 @@ namespace Light {
 
 		SetVisibility(true);
 
-		AddEventListener<WindowModule>(WindowEventType::eMouseMove, &WindowModule::Test, this);
+		Bind_MouseMove(&WindowModule::Test, this);
 	}
-
 
 	bool WindowModule::Test(std::pair<double, double> pos)
 	{
@@ -105,6 +104,10 @@ namespace Light {
 
 		glfwSetMouseButtonCallback(m_Handle, [](GLFWwindow* window, int32_t button, int32_t action, int32_t mods) {
 			((NotifierList*)glfwGetWindowUserPointer(window))->mouseButton.Invoke(std::forward<int32_t>(button), std::forward<int32_t>(action), std::forward<int32_t>(mods));
+		});
+
+		glfwSetCursorEnterCallback(m_Handle, [](GLFWwindow* window, int entered) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->mouseEnter.Invoke(std::forward<int32_t>(entered));
 		});
 
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* window, double xoffset, double yoffset) {
@@ -140,6 +143,12 @@ namespace Light {
 
 		glfwSetWindowFocusCallback(m_Handle, [](GLFWwindow* window, int32_t focus) {
 			((NotifierList*)glfwGetWindowUserPointer(window))->windowFocus.Invoke(std::forward<int32_t>(focus));
+		});
+
+		////////////////////////////////////////////////////////////////
+		/// File drop
+		glfwSetDropCallback(m_Handle, [](GLFWwindow* window, int32_t count, const char** paths) {
+			((NotifierList*)glfwGetWindowUserPointer(window))->fileDrop.Invoke(std::forward<int32_t>(count), std::forward<const char**>(paths));
 		});
 	}
 

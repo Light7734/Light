@@ -10,33 +10,7 @@ class GLFWwindow;
 
 namespace Light {
 
-	enum class WindowEventType : uint32_t
-	{
-		eMouseMove,
-		eMouseButton,
-		eMouseScroll,
-
-		eKey,
-		eChar,
-
-		eWindowMove,
-		eWindowResize,
-		eWindowFocus,
-		eWindowClose,
-
-		nCount
-	};
-
-	/** @todo Docs */
-	template<typename T>
-	using WindowEvent = std::variant<
-	    bool (T::*)(int32_t, int32_t, int32_t, int32_t),
-	    bool (T::*)(int32_t, int32_t, int32_t),
-	    bool (T::*)(std::pair<double, double>),
-	    bool (T::*)(std::pair<int32_t, int32_t>),
-	    bool (T::*)(int32_t),
-	    bool (T::*)(uint32_t),
-	    bool (T::*)()>;
+	using namespace std::placeholders;
 
 	/** @todo Docs */
 	struct WindowModuleConfig
@@ -59,7 +33,7 @@ namespace Light {
 	/**
     * @brief Module for creating and handling the main application's Window
     * @todo Multi-monitor support
-    * @todo Multi-window suuport [ ? ]
+    * @todo Multi-window support [ ? ]
     * @todo Fullscreen support
     * @todo Window hint mapping
     */
@@ -79,54 +53,75 @@ namespace Light {
 		virtual void OnDeinit() override;
 
 		////////////////////////////////////////////////////////////////
-		/// Facade Functions
+		/// Facade: Event Bindings
 		template<typename T>
-		void AddEventListener(WindowEventType type, WindowEvent<T> event, T* instance)
+		inline void Bind_MouseMove(bool (T::*func)(std::pair<double, double>), T* instance)
 		{
-			using namespace std::placeholders;
-			switch (type)
-			{
-			case WindowEventType::eMouseMove:
-				m_Notifiers.mouseMove.AddListener(std::bind(std::get<bool (T::*)(std::pair<double, double>)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eMouseButton:
-				m_Notifiers.mouseButton.AddListener(std::bind(std::get<bool (T::*)(int32_t, int32_t, int32_t)>(event), instance, _1, _2, _3));
-				break;
-
-			case WindowEventType::eMouseScroll:
-				m_Notifiers.mouseScroll.AddListener(std::bind(std::get<bool (T::*)(std::pair<double, double>)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eKey:
-				m_Notifiers.key.AddListener(std::bind(std::get<bool (T::*)(int32_t, int32_t, int32_t, int32_t)>(event), instance, _1, _2, _3, _4));
-				break;
-
-			case WindowEventType::eChar:
-				m_Notifiers.key.AddListener(std::bind(std::get<bool (T::*)(uint32_t)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eWindowMove:
-				m_Notifiers.windowMove.AddListener(std::bind(std::get<bool (T::*)(std::pair<int32_t, int32_t>)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eWindowResize:
-				m_Notifiers.windowResize.AddListener(std::bind(std::get<bool (T::*)(std::pair<int32_t, int32_t>)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eWindowFocus:
-				m_Notifiers.windowFocus.AddListener(std::bind(std::get<bool (T::*)(int32_t)>(event), instance, _1));
-				break;
-
-			case WindowEventType::eWindowClose:
-				m_Notifiers.windowClose.AddListener(std::bind(std::get<bool (T::*)()>(event), instance));
-				break;
-
-			default:
-				ASSERT(false, "Invalid WindowEventType value");
-			}
+			m_Notifiers.mouseMove.AddListener(std::bind(func, instance, std::placeholders::_1));
 		}
 
+		template<typename T>
+		inline void Bind_MouseButton(bool (T::*func)(int32_t, int32_t, int32_t), T* instance)
+		{
+			m_Notifiers.mouseButton.AddListener(std::bind(func, instance, _1, _2, _3));
+		}
+
+		template<typename T>
+		inline void Bind_MouseScroll(bool (T::*func)(std::pair<double, double>), T* instance)
+		{
+			m_Notifiers.mouseScroll.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_MouseEnter(bool (T::*func)(int32_t), T* instance)
+		{
+			m_Notifiers.mouseEnter.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_Key(bool (T::*func)(int32_t, int32_t, int32_t, int32_t), T* instance)
+		{
+			m_Notifiers.key.AddListener(std::bind(func, instance, _1, _2, _3, _4));
+		}
+
+		template<typename T>
+		inline void Bind_Char(bool (T::*func)(uint32_t), T* instance)
+		{
+			m_Notifiers.character.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_WindowMove(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance)
+		{
+			m_Notifiers.windowMove.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_WindowResize(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance)
+		{
+			m_Notifiers.windowResize.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_WindowFocus(bool (T::*func)(int32_t), T* instance)
+		{
+			m_Notifiers.windowFocus.AddListener(std::bind(func, instance, _1));
+		}
+
+		template<typename T>
+		inline void Bind_WindowClose(bool (T::*func)(), T* instance)
+		{
+			m_Notifiers.windowClose.AddListener(std::bind(func, instance));
+		}
+
+		template<typename T>
+		inline void Bind_FileDrop(bool (T::*func)(int, const char**), T* instance)
+		{
+			m_Notifiers.fileDrop.AddListener(std::bind(func, instance, _1, _2));
+		}
+
+		////////////////////////////////////////////////////////////////
+		/// Facade Functions
 		void MakeCentered();
 
 		bool Test(std::pair<double, double> pos);
@@ -139,7 +134,10 @@ namespace Light {
 		std::pair<int32_t, int32_t> GetWindowSize() const;
 		std::pair<int32_t, int32_t> GetWindowPosition() const;
 
-		inline bool IsVisible() const { return m_Visible; }
+		inline bool IsVisible() const
+		{
+			return m_Visible;
+		}
 
 	private:
 		void BindGlfwCallbacks();
@@ -156,6 +154,7 @@ namespace Light {
 			Notifier<std::pair<double, double>> mouseMove   = {};
 			Notifier<int32_t, int32_t, int32_t> mouseButton = {};
 			Notifier<std::pair<double, double>> mouseScroll = {};
+			Notifier<int> mouseEnter                        = {};
 
 			Notifier<int, int, int, int> key = {};
 			Notifier<uint32_t> character     = {};
@@ -164,6 +163,8 @@ namespace Light {
 			Notifier<std::pair<int32_t, int32_t>> windowResize = {};
 			Notifier<int32_t> windowFocus                      = {};
 			Notifier<> windowClose                             = {};
+
+			Notifier<int, const char**> fileDrop = {};
 		} m_Notifiers = {};
 	};
 
@@ -183,8 +184,41 @@ namespace Light {
 			s_Module = module;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// Event Bindings
+		/// @todo Docs
 		template<typename T>
-		static inline void AddEventListener(WindowEventType type, WindowEvent<T> event, T* instance) { s_Module->AddEventListener<T>(type, event, instance); }
+		static inline void Bind_MouseMove(bool (T::*func)(std::pair<double, double>), T* instance) { s_Module->Bind_MouseMove<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_MouseButton(bool (T::*func)(int32_t, int32_t, int32_t), T* instance) { s_Module->Bind_MouseButton<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_MouseScroll(bool (T::*func)(std::pair<double, double>), T* instance) { s_Module->Bind_MouseScroll<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_MouseEnter(bool (T::*func)(int32_t), T* instance) { s_Module->Bind_MouseEnter<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_Key(bool (T::*func)(int32_t, int32_t, int32_t, int32_t), T* instance) { s_Module->Bind_Key<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_Char(bool (T::*func)(uint32_t), T* instance) { s_Module->Bind_Char<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_WindowMove(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance) { s_Module->Bind_WindowMove<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_WindowResize(bool (T::*func)(std::pair<int32_t, int32_t>), T* instance) { s_Module->Bind_WindowResize<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_WindowFocus(bool (T::*func)(int32_t), T* instance) { s_Module->Bind_WindowFocus<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_WindowClose(bool (T::*func)(), T* instance) { s_Module->Bind_WindowClose<T>(func, instance); }
+
+		template<typename T>
+		static inline void Bind_FileDrop(bool (T::*func)(int, const char**), T* instance) { s_Module->Bind_FileDrop<T>(func, instance); }
 
 		/** @brief Centers the window */
 		static inline void MakeCentered() { s_Module->MakeCentered(); }
