@@ -60,6 +60,7 @@ target_link_libraries(
     PRIVATE Time
     PRIVATE Profiler
     PRIVATE Events
+    PRIVATE ECS
 )
 
 ################################################################
@@ -102,7 +103,6 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/Time/Source
 )
 
-
 ################################################################
 ### FILEMANAGER
 file(GLOB_RECURSE FILEMANAGER_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/FileManager/*)
@@ -111,6 +111,16 @@ add_library(FileManager STATIC ${FILEMANAGER_FILES})
 target_include_directories(
     FileManager
     PRIVATE ${CMAKE_SOURCE_DIR}/Modules/FileManager/Source
+)
+
+################################################################
+### FILEMANAGER
+file(GLOB_RECURSE ECS_FILES true ABSOLUTE ${CMAKE_SOURCE_DIR}/Modules/ECS/*)
+add_library(ECS STATIC ${ECS_FILES})
+
+target_include_directories(
+    ECS
+    PRIVATE ${CMAKE_SOURCE_DIR}/Modules/ECS/Source
 )
 
 ################################################################
