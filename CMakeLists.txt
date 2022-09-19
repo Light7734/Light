@@ -17,6 +17,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Vendor/glfw/include/
     ${CMAKE_SOURCE_DIR}/Vendor/entt/src/
     ${CMAKE_SOURCE_DIR}/Vendor/imgui/
+    ${CMAKE_SOURCE_DIR}/Vendor/glm/
 )
 
 ################################################################
