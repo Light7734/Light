@@ -38,7 +38,7 @@ Light Engine is a data-driven and highly-modularized game engine written in mode
 
 **Getting started:**
 ```
-git clone --recurse-submodules 'git@github.com:light7734'
+git clone --recurse-submodules 'git@github.com:light7734/light'
 mkdir light/Build
 cd light/Build
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1
