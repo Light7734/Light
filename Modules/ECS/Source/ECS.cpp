@@ -15,27 +15,12 @@ namespace Light {
 		ECS::self = {};
 	}
 
-	////////////////////////////////////////////////////////////////
-	/// Module Interface
-	void ECSModule::OnConfig()
+	void ECSModule::OnTick()
 	{
 	}
 
-	void ECSModule::OnInit()
+	void ECSModule::OnSync()
 	{
-	}
-
-	void ECSModule::OnUpdate()
-	{
-	}
-
-	void ECSModule::OnDeinit()
-	{
-	}
-
-	Entity ECSModule::Facade::CreateEntity()
-	{
-		return self->m_Registry.create();
 	}
 
 } // namespace Light

@@ -5,38 +5,13 @@
 
 namespace Light {
 
-	static bool Test(std::pair<double, double> pos)
-	{
-		auto [x, y] = pos;
-		LOG("Window", LogLvl::eTrace, "Mouse moved {} - {}", x, y);
-
-		return false;
-	}
-
 	WindowModule* Window::self = nullptr;
 
 	WindowModule::WindowModule()
-	    : Module(true)
+	    : Module(Module::TickType::eGameThread, true)
 	{
 		WindowModule::Facade::self = this;
-	}
 
-	WindowModule::~WindowModule()
-	{
-		WindowModule::Facade::self = nullptr;
-	}
-
-	bool WindowModule::HasRequestedAppTermination() const
-	{
-		return glfwWindowShouldClose(m_Handle);
-	}
-
-	void WindowModule::OnConfig()
-	{
-	}
-
-	void WindowModule::OnInit()
-	{
 		LoggerCategoryCreateInfo categoryInfo = {
 			"Window",                 // name
 			LOGGER_DEFAULT_PATTERN,   // pattern
@@ -78,21 +53,31 @@ namespace Light {
 		                 monitorX + (monitorWidth - m_Config.width) / 2,
 		                 monitorY + (monitorHeight - m_Config.height) / 2);
 
-		glfwSetWindowUserPointer(m_Handle, &m_Notifiers);
+		glfwSetWindowUserPointer(m_Handle, &m_Events);
 
 		Window::SetVisibility(true);
-		Window::BindStatic_MouseMove(&Test);
 	}
 
-	void WindowModule::OnUpdate()
+	WindowModule::~WindowModule()
 	{
-		glfwSwapBuffers(m_Handle);
-		glfwPollEvents();
-	}
+		WindowModule::Facade::self = nullptr;
 
-	void WindowModule::OnDeinit()
-	{
 		glfwDestroyWindow(m_Handle);
+	}
+
+	bool WindowModule::HasRequestedAppTermination() const
+	{
+		return glfwWindowShouldClose(m_Handle);
+	}
+
+	void WindowModule::OnTick()
+	{
+	}
+
+	void WindowModule::OnSync()
+	{
+		glfwPollEvents();
+		glfwSwapBuffers(m_Handle);
 	}
 
 	void WindowModule::BindGlfwCallbacks()
@@ -100,56 +85,56 @@ namespace Light {
 		////////////////////////////////////////////////////////////////
 		/// Mouse events
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* window, double xpos, double ypos) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->mouseMove.Invoke({ xpos, ypos });
+			((WindowEventList*)glfwGetWindowUserPointer(window))->mouseMove.push_back({ xpos, ypos });
 		});
 
 		glfwSetMouseButtonCallback(m_Handle, [](GLFWwindow* window, int32_t button, int32_t action, int32_t mods) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->mouseButton.Invoke(std::forward<int32_t>(button), std::forward<int32_t>(action), std::forward<int32_t>(mods));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->mouseButton.push_back({ (button), (action), (mods) });
 		});
 
 		glfwSetCursorEnterCallback(m_Handle, [](GLFWwindow* window, int entered) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->mouseEnter.Invoke(std::forward<int32_t>(entered));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->mouseEnter.push_back({ (entered) });
 		});
 
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* window, double xoffset, double yoffset) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->mouseScroll.Invoke({ xoffset, yoffset });
+			((WindowEventList*)glfwGetWindowUserPointer(window))->mouseScroll.push_back({ xoffset, yoffset });
 		});
 
 		////////////////////////////////////////////////////////////////
 		/// Keyboard events
 		glfwSetKeyCallback(m_Handle, [](GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int mods) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->key.Invoke(std::forward<int32_t>(key), std::forward<int32_t>(scancode), std::forward<int32_t>(action), std::forward<int32_t>(mods));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->key.push_back({ (key), (scancode), (action), (mods) });
 
 			if (key == GLFW_KEY_ESCAPE)
 				glfwSetWindowShouldClose(window, true);
 		});
 
 		glfwSetCharCallback(m_Handle, [](GLFWwindow* window, uint32_t character) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->character.Invoke(std::forward<uint32_t>(character));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->character.push_back({ character });
 		});
 
 		////////////////////////////////////////////////////////////////
 		/// Window events
 		glfwSetWindowPosCallback(m_Handle, [](GLFWwindow* window, int32_t xpos, int32_t ypos) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->windowMove.Invoke({ xpos, ypos });
+			((WindowEventList*)glfwGetWindowUserPointer(window))->windowMove.push_back({ xpos, ypos });
 		});
 
 		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* window, int32_t width, int32_t height) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->windowResize.Invoke({ width, height });
+			((WindowEventList*)glfwGetWindowUserPointer(window))->windowResize.push_back({ width, height });
 		});
 
 		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* window) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->windowClose.Invoke();
+			((WindowEventList*)glfwGetWindowUserPointer(window))->windowClose.push_back({});
 		});
 
 		glfwSetWindowFocusCallback(m_Handle, [](GLFWwindow* window, int32_t focus) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->windowFocus.Invoke(std::forward<int32_t>(focus));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->windowFocus.push_back({ (focus) });
 		});
 
 		////////////////////////////////////////////////////////////////
 		/// File drop
 		glfwSetDropCallback(m_Handle, [](GLFWwindow* window, int32_t count, const char** paths) {
-			((NotifierList*)glfwGetWindowUserPointer(window))->fileDrop.Invoke(std::forward<int32_t>(count), std::forward<const char**>(paths));
+			((WindowEventList*)glfwGetWindowUserPointer(window))->fileDrop.push_back({ (count), std::forward<const char**>(paths) });
 		});
 	}
 
@@ -212,5 +197,61 @@ namespace Light {
 		glfwGetWindowPos(self->m_Handle, &position.first, &position.second);
 		return position;
 	}
+
+	std::vector<std::tuple<double, double>> WindowModule::Facade::GetMouseMoveEvents()
+	{
+		return self->m_Events.mouseMove;
+	}
+
+	std::vector<std::tuple<int32_t, int32_t, int32_t>> WindowModule::Facade::GetMouseButtonEvents()
+	{
+		return self->m_Events.mouseButton;
+	}
+
+	std::vector<std::tuple<double, double>> WindowModule::Facade::GetMouseScrollEvents()
+	{
+		return self->m_Events.mouseScroll;
+	}
+
+	std::vector<std::tuple<int>> WindowModule::Facade::GetMouseEnterEvents()
+	{
+		return self->m_Events.mouseEnter;
+	}
+
+	std::vector<std::tuple<int, int, int, int>> WindowModule::Facade::GetKeyEvents()
+	{
+		return self->m_Events.key;
+	}
+
+	std::vector<std::tuple<uint32_t>> WindowModule::Facade::GetCharacterEvents()
+	{
+		return self->m_Events.character;
+	}
+
+	std::vector<std::tuple<int32_t, int32_t>> WindowModule::Facade::GetWindowMoveEvents()
+	{
+		return self->m_Events.windowMove;
+	}
+
+	std::vector<std::tuple<int32_t, int32_t>> WindowModule::Facade::GetWindowResizeEvents()
+	{
+		return self->m_Events.windowResize;
+	}
+
+	std::vector<std::tuple<int32_t>> WindowModule::Facade::GetWindowFocusEvents()
+	{
+		return self->m_Events.windowFocus;
+	}
+
+	std::vector<std::tuple<>> WindowModule::Facade::GetWindowCloseEvents()
+	{
+		return self->m_Events.windowClose;
+	}
+
+	std::vector<std::tuple<int, const char**>> WindowModule::Facade::GetFileDropEvents()
+	{
+		return self->m_Events.fileDrop;
+	}
+
 
 } // namespace Light

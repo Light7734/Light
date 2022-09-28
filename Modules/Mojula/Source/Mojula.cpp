@@ -2,8 +2,8 @@
 
 namespace Light {
 
-	Module::Module(bool tickable /* = false */)
-	    : m_Tickable(tickable)
+	Module::Module(TickType tick_type /* = false */, bool syncable /* = false */)
+	    : m_TickType(tick_type), m_Syncable(syncable)
 	{
 	}
 

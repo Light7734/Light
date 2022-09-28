@@ -52,17 +52,14 @@ namespace Light {
 
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
-		virtual void OnConfig() override;
-		virtual void OnInit() override;
-		virtual void OnUpdate() override;
-		virtual void OnDeinit() override;
+		virtual void OnTick() override;
+		virtual void OnSync() override;
 
 	private:
 		std::unordered_map<std::filesystem::path, std::shared_ptr<TxtFile>> m_TxtFiles;
 
 	public:
 		/** @brief Facade of the FileManagerModule */
-
 		class Facade
 		{
 			friend FileManagerModule;

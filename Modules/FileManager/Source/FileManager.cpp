@@ -5,22 +5,9 @@ namespace Light {
 	FileManagerModule* FileManager::self = {};
 
 	FileManagerModule::FileManagerModule()
-	    : Module(false)
 	{
 		FileManager::self = this;
-	}
 
-	FileManagerModule::~FileManagerModule()
-	{
-		FileManager::self = {};
-	}
-
-	void FileManagerModule::OnConfig()
-	{
-	}
-
-	void FileManagerModule::OnInit()
-	{
 		LoggerCategoryCreateInfo categoryInfo {
 			"FileManager",            // name
 			LOGGER_DEFAULT_PATTERN,   // pattern
@@ -31,13 +18,19 @@ namespace Light {
 		Logger::CreateCategory(categoryInfo);
 	}
 
-	void FileManagerModule::OnUpdate()
+	FileManagerModule::~FileManagerModule()
+	{
+		FileManager::self = {};
+
+		m_TxtFiles.clear();
+	}
+
+	void FileManagerModule::OnTick()
 	{
 	}
 
-	void FileManagerModule::OnDeinit()
+	void FileManagerModule::OnSync()
 	{
-		m_TxtFiles.clear();
 	}
 
 	std::shared_ptr<TxtFile> FileManagerModule::Facade::CreateTxt(std::filesystem::path path)
@@ -52,6 +45,5 @@ namespace Light {
 
 		return self->m_TxtFiles[path];
 	}
-
 
 } // namespace Light

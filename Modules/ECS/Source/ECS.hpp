@@ -16,10 +16,8 @@ namespace Light {
 
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
-		virtual void OnConfig() override;
-		virtual void OnInit() override;
-		virtual void OnUpdate() override;
-		virtual void OnDeinit() override;
+		virtual void OnTick() override;
+		virtual void OnSync() override;
 
 	private:
 		entt::registry m_Registry;
@@ -37,6 +35,11 @@ namespace Light {
 			static inline Entity CreateEntity()
 			{
 				return self->m_Registry.create();
+			}
+
+			template<typename... Components>
+			static inline auto Group()
+			{
 			}
 
 			template<typename T, typename... Args>

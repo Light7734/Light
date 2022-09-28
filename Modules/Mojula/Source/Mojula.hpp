@@ -9,21 +9,30 @@ namespace Light {
 
 	/** @brief Base module class
      * Modules are the building blocks of the program, their functionality is exposed using a facade class
-     * eg. LoggerModule(class that implements the ugly detauls)
+     * eg. LoggerModule(class that implements the ugly details)
      *     Logger(facade class with static functions and no constructors)
      *
      * They can optionally tick every application frame
      *
      * There SHOULD NOT be a two way dependency between modules!
      * 
-     * @todo More Docs
-     *
-     */
+    * @todo More Docs */
 	class Module
 	{
 	public:
-		/** @param tickable Should OnUpdate be called every frame? */
-		Module(bool tickable = false);
+		enum class TickType : uint8_t
+		{
+			eNone,
+			eGameThread,
+			eRenderThread,
+
+			nCount,
+		};
+
+	public:
+		/** @param tick_type Which thread should module tick in?
+		 * @param syncable Should OnSync be called every frame? */
+		Module(TickType tick_type = TickType::eNone, bool syncable = false);
 
 		Module(const Module&)            = delete;
 		Module& operator=(const Module&) = delete;
@@ -32,18 +41,15 @@ namespace Light {
 
 		virtual inline bool HasRequestedAppTermination() const { return false; }
 
-		/** @brief Name is misleading ; used to configure other modules' config struct before their OnInit
-            @todo Implement module configuration */
-		virtual void OnConfig() = 0;
+		virtual void OnTick() = 0;
+		virtual void OnSync() = 0;
 
-		virtual void OnInit()   = 0;
-		virtual void OnUpdate() = 0;
-		virtual void OnDeinit() = 0;
-
-		inline bool IsTickable() const { return m_Tickable; }
+		inline TickType GetTickType() const { return m_TickType; }
+		inline bool IsSyncable() const { return m_Syncable; }
 
 	private:
-		bool m_Tickable = false;
+		const TickType m_TickType = {};
+		const bool m_Syncable     = {};
 	};
 
 

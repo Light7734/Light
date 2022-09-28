@@ -5,7 +5,7 @@ namespace Light {
 	TimeModule* Time::self = nullptr;
 
 	TimeModule::TimeModule()
-	    : Module(true)
+	    : Module(Module::TickType::eGameThread)
 	{
 		Time::self = this;
 	}
@@ -14,15 +14,7 @@ namespace Light {
 	{
 	}
 
-	void TimeModule::OnConfig()
-	{
-	}
-
-	void TimeModule::OnInit()
-	{
-	}
-
-	void TimeModule::OnUpdate()
+	void TimeModule::OnTick()
 	{
 		static bool firstFrame = true;
 
@@ -32,7 +24,7 @@ namespace Light {
 		m_Timer.Reset();
 	}
 
-	void TimeModule::OnDeinit()
+	void TimeModule::OnSync()
 	{
 	}
 

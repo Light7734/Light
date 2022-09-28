@@ -15,10 +15,8 @@ namespace Light {
 
 		////////////////////////////////////////////////////////////////
 		/// Module Interface
-		virtual void OnConfig() override;
-		virtual void OnInit() override;
-		virtual void OnUpdate() override;
-		virtual void OnDeinit() override;
+		virtual void OnTick() override;
+		virtual void OnSync() override;
 
 	private:
 		Timer m_Timer;

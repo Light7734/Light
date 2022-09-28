@@ -12,6 +12,24 @@ namespace Light {
 
 	using namespace std::placeholders;
 
+	struct WindowEventList
+	{
+		std::vector<std::tuple<double, double>> mouseMove              = {};
+		std::vector<std::tuple<int32_t, int32_t, int32_t>> mouseButton = {};
+		std::vector<std::tuple<double, double>> mouseScroll            = {};
+		std::vector<std::tuple<int>> mouseEnter                        = {};
+
+		std::vector<std::tuple<int, int, int, int>> key = {};
+		std::vector<std::tuple<uint32_t>> character     = {};
+
+		std::vector<std::tuple<int32_t, int32_t>> windowMove   = {};
+		std::vector<std::tuple<int32_t, int32_t>> windowResize = {};
+		std::vector<std::tuple<int32_t>> windowFocus           = {};
+		std::vector<std::tuple<>> windowClose                  = {};
+
+		std::vector<std::tuple<int, const char**>> fileDrop = {};
+	};
+
 	/** @todo Docs */
 	struct WindowModuleConfig
 	{
@@ -47,10 +65,8 @@ namespace Light {
 		/// Module Interface
 		virtual bool HasRequestedAppTermination() const override;
 
-		virtual void OnConfig() override;
-		virtual void OnInit() override;
-		virtual void OnUpdate() override;
-		virtual void OnDeinit() override;
+		virtual void OnTick() override;
+		virtual void OnSync() override;
 
 		inline bool IsVisible() const
 		{
@@ -63,28 +79,10 @@ namespace Light {
 	private:
 		WindowModuleConfig m_Config = {};
 
-		GLFWwindow* m_Handle = {};
-		bool m_Visible       = {};
+		GLFWwindow* m_Handle {};
+		bool m_Visible {};
 
-		// Notifiers need to be inside a struct to be ezly accessed by window user pointer
-		struct NotifierList
-		{
-			Notifier<std::pair<double, double>> mouseMove   = {};
-			Notifier<int32_t, int32_t, int32_t> mouseButton = {};
-			Notifier<std::pair<double, double>> mouseScroll = {};
-			Notifier<int> mouseEnter                        = {};
-
-			Notifier<int, int, int, int> key = {};
-			Notifier<uint32_t> character     = {};
-
-			Notifier<std::pair<int32_t, int32_t>> windowMove   = {};
-			Notifier<std::pair<int32_t, int32_t>> windowResize = {};
-			Notifier<int32_t> windowFocus                      = {};
-			Notifier<> windowClose                             = {};
-
-			Notifier<int, const char**> fileDrop = {};
-		} m_Notifiers = {};
-
+		WindowEventList m_Events;
 
 	public:
 		/** @brief Facade of the WindowModule */
@@ -95,19 +93,6 @@ namespace Light {
 		public:
 			Facade()  = delete;
 			~Facade() = delete;
-
-			/// @todo Docs
-			STATIC_NOTIF_BINDING(MouseMove, self->m_Notifiers.mouseMove, 1, std::pair<double, double>);
-			STATIC_NOTIF_BINDING(MouseButton, self->m_Notifiers.mouseButton, 3, int32_t, int32_t, int32_t);
-			STATIC_NOTIF_BINDING(MouseScroll, self->m_Notifiers.mouseScroll, 1, std::pair<double, double>);
-			STATIC_NOTIF_BINDING(MouseEnter, self->m_Notifiers.mouseEnter, 1, int32_t);
-			STATIC_NOTIF_BINDING(Key, self->m_Notifiers.key, 4, int32_t, int32_t, int32_t, int32_t);
-			STATIC_NOTIF_BINDING(Char, self->m_Notifiers.character, 1, uint32_t);
-			STATIC_NOTIF_BINDING(WindowMove, self->m_Notifiers.windowMove, 1, std::pair<int32_t, int32_t>);
-			STATIC_NOTIF_BINDING(WindowResize, self->m_Notifiers.windowResize, 1, std::pair<int32_t, int32_t>);
-			STATIC_NOTIF_BINDING(WindowFocus, self->m_Notifiers.windowFocus, 1, int32_t);
-			STATIC_NOTIF_BINDING(WindowClose, self->m_Notifiers.windowClose, 0);
-			STATIC_NOTIF_BINDING(FileDrop, self->m_Notifiers.fileDrop, 2, int, const char**);
 
 			/** @brief Centers the window */
 			static void MakeCentered();
@@ -128,6 +113,28 @@ namespace Light {
 
 			/** @return Position of the upper-left corner of the content area in screen coordinates */
 			static std::pair<int32_t, int32_t> GetWindowPosition();
+
+			static std::vector<std::tuple<double, double>> GetMouseMoveEvents();
+
+			static std::vector<std::tuple<int32_t, int32_t, int32_t>> GetMouseButtonEvents();
+
+			static std::vector<std::tuple<double, double>> GetMouseScrollEvents();
+
+			static std::vector<std::tuple<int>> GetMouseEnterEvents();
+
+			static std::vector<std::tuple<int, int, int, int>> GetKeyEvents();
+
+			static std::vector<std::tuple<uint32_t>> GetCharacterEvents();
+
+			static std::vector<std::tuple<int32_t, int32_t>> GetWindowMoveEvents();
+
+			static std::vector<std::tuple<int32_t, int32_t>> GetWindowResizeEvents();
+
+			static std::vector<std::tuple<int32_t>> GetWindowFocusEvents();
+
+			static std::vector<std::tuple<>> GetWindowCloseEvents();
+
+			static std::vector<std::tuple<int, const char**>> GetFileDropEvents();
 
 		private:
 			static WindowModule* self;

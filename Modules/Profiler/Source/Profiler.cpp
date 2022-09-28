@@ -8,19 +8,7 @@ namespace Light {
 	ProfilerModule::ProfilerModule()
 	{
 		Profiler::self = this;
-	}
 
-	ProfilerModule::~ProfilerModule()
-	{
-		Profiler::self = {};
-	}
-
-	void ProfilerModule::OnConfig()
-	{
-	}
-
-	void ProfilerModule::OnInit()
-	{
 		m_OutputFile = FileManager::CreateTxt(Paths::GetLogsDir() / "ProfileResult.json");
 		m_OutputFile << "{\"traceEvents\":[";
 
@@ -35,14 +23,20 @@ namespace Light {
 		m_OutputFile << "}";
 	}
 
-	void ProfilerModule::OnUpdate()
-	{
-	}
-
-	void ProfilerModule::OnDeinit()
+	ProfilerModule::~ProfilerModule()
 	{
 		m_OutputFile << "]}";
 		m_OutputFile.reset();
+
+		Profiler::self = {};
+	}
+
+	void ProfilerModule::OnTick()
+	{
+	}
+
+	void ProfilerModule::OnSync()
+	{
 	}
 
 	void ProfilerModule::Facade::SubmitScopeResult(const ScopeResult& scope_result)

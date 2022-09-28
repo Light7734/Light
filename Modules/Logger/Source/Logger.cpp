@@ -9,7 +9,6 @@ namespace Light {
 	LoggerModule* Logger::self = {};
 
 	LoggerModule::LoggerModule()
-	    : Module(false)
 	{
 		Logger::self = this;
 	}
@@ -19,19 +18,11 @@ namespace Light {
 		Logger::self = {};
 	}
 
-	void LoggerModule::OnConfig()
+	void LoggerModule::OnTick()
 	{
 	}
 
-	void LoggerModule::OnInit()
-	{
-	}
-
-	void LoggerModule::OnUpdate()
-	{
-	}
-
-	void LoggerModule::OnDeinit()
+	void LoggerModule::OnSync()
 	{
 	}
 
