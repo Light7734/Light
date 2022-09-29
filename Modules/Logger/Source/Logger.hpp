@@ -20,7 +20,6 @@
  * @param ... Variadic arguments to be logged
  * @note @a category should be log category created witihn the invoking module */
 #define LOG(category, log_level, ...) ::Light::Logger::Log(category, log_level, __VA_ARGS__)
-#define LOG(category, log_level, ...) // @todo Adapt logger to multi-threaded environment 
 
 namespace Light {
 

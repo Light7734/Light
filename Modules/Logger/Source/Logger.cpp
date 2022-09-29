@@ -11,6 +11,7 @@ namespace Light {
 	LoggerModule::LoggerModule()
 	{
 		Logger::self = this;
+		spdlog::init_thread_pool(8192ull, 1ull);
 	}
 
 	LoggerModule::~LoggerModule()
@@ -34,7 +35,7 @@ namespace Light {
 		switch (info.type)
 		{
 		case LoggerType::eStdoutColor:
-			logger = spdlog::stdout_color_mt(info.name);
+			logger = spdlog::stdout_color_mt<spdlog::async_factory>(info.name);
 			break;
 		case LoggerType::eFileAsync:
 			logger = spdlog::basic_logger_mt<spdlog::async_factory>(info.name, info.outputFile);
