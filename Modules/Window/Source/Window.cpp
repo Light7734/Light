@@ -8,7 +8,7 @@ namespace Light {
 	WindowModule* Window::self = nullptr;
 
 	WindowModule::WindowModule()
-	    : Module(Module::TickType::eGameThread, true)
+	    : Module(Module::TickType::eNone, true)
 	{
 		WindowModule::Facade::self = this;
 
@@ -77,7 +77,7 @@ namespace Light {
 	void WindowModule::OnSync()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Handle);
+		glfwSwapBuffers(m_Handle); // @todo remove when vulkan renderer is added
 	}
 
 	void WindowModule::BindGlfwCallbacks()
