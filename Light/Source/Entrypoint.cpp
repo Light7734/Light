@@ -71,24 +71,6 @@ int main()
 
 			bool shouldClose = false;
 
-			std::function<void(std::vector<Module*>&, std::atomic<bool>&, std::atomic<bool>&)> threadSign =
-			    [&](std::vector<Module*>& mods, std::atomic<bool>& a, std::atomic<bool>& b) {
-				    while (!shouldClose)
-				    {
-					    b = true;
-					    while (!a)
-					    {
-						    std::this_thread::sleep_for(std::chrono::milliseconds(0));
-					    }
-					    a = false;
-
-					    for (Module* module : gameModules)
-					    {
-						    module->OnTick();
-					    }
-				    }
-			    };
-
 			auto gameThread = std::async(std::launch::async, [&]() {
 				while (!shouldClose)
 				{
@@ -100,7 +82,7 @@ int main()
 					game_b = true;
 					while (!game_a)
 					{
-						std::this_thread::sleep_for(std::chrono::milliseconds(0));
+						std::this_thread::yield();
 					}
 					game_a = false;
 				} });
@@ -116,7 +98,7 @@ int main()
 					render_b = true;
 					while (!render_a)
 					{
-						std::this_thread::sleep_for(std::chrono::milliseconds(0));
+						std::this_thread::yield();
 					}
 					render_a = false;
 				}
@@ -128,7 +110,7 @@ int main()
 
 				while (!game_b && !render_b)
 				{
-					std::this_thread::sleep_for(std::chrono::milliseconds(0));
+					std::this_thread::yield();
 				}
 
 				game_b   = false;
