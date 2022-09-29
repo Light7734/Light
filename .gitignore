@@ -1,6 +1,6 @@
 # Directories in the root directory
-/Doxygen
 /Build
+/build
 
 .cache/
 
