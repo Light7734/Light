@@ -3,8 +3,9 @@
 <div align="center">
 <img src="https://raw.githubusercontent.com/Light7734/Light/main/Branding/light-colored-transparent.svg"/>
 
-An idiot admires complexity, a genius admires simplicity.
+<i> "An idiot admires complexity, a genius admires simplicity." </i>
 
+-Terry. A. Davis
 </div>
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0)
