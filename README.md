@@ -1,4 +1,4 @@
-# Light
+# Light 
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/Light7734/Light/main/Branding/light-colored-transparent.svg"/>
@@ -16,6 +16,8 @@
 Light Engine is a data-driven and highly-modularized game engine written in modern C++
 
 ## Development Guideline
+
+### ⚠️ Waiting for C++ modules to have better support ⚠️
 
 [![Trello Board](https://img.shields.io/badge/TRELLO-white?style=for-the-badge&logo=trello&logoColor=e21a41)](https://trello.com/b/gwn3xVEi/light-engine)
 
