@@ -35,10 +35,9 @@ Light Engine is a data-driven and highly-modularized game engine written in mode
 
 -   **feat:** Changes that add a new feature
 -   **fix:** Changes that fix a bug
--   **refactor:** Changes that neither fix a bug nor add a feature
+-   **refactor:** Changes that improve the code quality (readablity/performance/extensibility/etc)
 -   **style:** Code changes that don't affect the compiled code
 -   **docs:** Changes to the documentations
--   **perf:** Changes that improve the code performance
 -   **asset:** Changes to the assets
 
 **Branches:**
